@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Глава 1: Вступ</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blog Template">
+    <meta name="author" content="Xiaoying Riley at 3rd Wave Media">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <!-- FontAwesome JS-->
+    <script defer src="https://use.fontawesome.com/releases/v5.7.1/js/all.js" integrity="sha384-eVEQC9zshBn0rFj4+TU78eNA19HMNigMviK/PU/FFjLXqa/GKPgX58rvt5Z8PLs7" crossorigin="anonymous"></script>
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/monokai-sublime.min.css">
+
+    <!-- Theme CSS -->
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme-1.css">
+
+
+</head>
+
+<body>
+
+    <header class="header text-center">
+        <h1 class="blog-name pt-lg-4 mb-0">Зміст</h1>
+
+        <nav class="navbar navbar-expand-lg navbar-dark">
+
+            <ul class="navbar-nav flex-column text-left">
+                <li class="nav-item">
+                    <a class="nav-link" href="blog-post.html"></i>Початок роботи із паралельністю</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="chapter1.html"></i>Глава 1: Вступ<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="chapter2.html"></i>Глава 2: GCD & Operations</a>
+                </li>
+            </ul>
+
+
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-wrapper">
+
+        <article class="blog-post px-3 py-5 p-md-5">
+            <div class="container">
+                <header class="blog-post-header">
+                    <h2 class="title mb-2">Глава 1: Вступ</h2>
+                    <div class="meta mb-3"><span class="date">Published 3 months ago</span><span class="time">5 min read</span></div>
+                </header>
+
+                <div class="blog-post-body">
+                    <p>Якщо все зробити правильно, ніхто не буде дякувати вам, але якщо щось буде зроблено неправильно, враження про додаток постраждає.</p>
+                    <p>Існує безліч способів оптимізації програми для швидкості, продуктивності, чи зворотнього зв'язку. Ця книга буде присвячена темі <b>паралельності</b>.</p>
+
+                    <br>
+                    <h3>Що таке паралельність?</h3>
+                    <p><i>Вікіпедія</i> визначає паралелізм як <i>«властивість розбиття програми, алгоритму або завдання на незалежні від порядку, або частково впорядковані компоненти чи блоки»</i>. Це означає, що потрібно подивитися на логіку вашої програми,
+                        щоб визначити, які частини можуть виконуватися одночасно, і, можливо, в довільному порядку, але все ж приводити до правильної реалізації потоку даних.</p>
+                    <p>Сучасні пристрої майже завжди мають більше одного CPU, а iPhone від Apple став двоядерним починаючи з 2011 року. Наявність більше одного ядра означає, що вони здатні виконувати більше однієї задачі одночасно. Розбиваючи ваш додаток
+                        на логічні «шматки» коду, ви дозволяєте пристрою iOS запускати кілька частин вашої програми одночасно, що підвищує загальну продуктивність.</p>
+                    <br>
+                    <h3>Навіщо використовувати паралельність?</h3>
+
+                    <p>Дуже важливо, щоб ваш додаток працював максимально плавно і щоб кінцевий користувач не був змушеним чекати, коли щось станеться. Секунда - крихітний проміжок часу для всього, що не стосується комп'ютерів. Проте, якщо людина повинна
+                        почекати секунду, щоб побачити результат після виконання дії, це виглядатиме як вічність. «Це занадто повільно» - один з основних факторів, що сприяють видаленню вашого додатку.</p>
+
+                    <p>Прокрутка таблиці зображень є однією з найбільш поширених ситуацій, в яких відсутність паралелізму впливає на кінцевого користувача. Якщо вам необхідно завантажити зображення з мережі або виконати будь-який тип обробки зображення перед
+                        його відображенням, прокрутка буде зависати, і ви будете змушені відображати кілька індикаторів «busy» замість очікуваного зображення.</p>
+
+                    <br>
+                    <h3>Як використовувати паралельність?</h3>
+
+                    <p>Це тема цієї книги! На високому рівні вам потрібно структурувати свій додаток так, щоб деякі завдання могли виконуватися одночасно. Кілька завдань, які можуть змінювати один і той же ресурс (напр. змінну), не можуть виконуватися одночасно,
+                        у випадку, якщо ви не зробите їх потокобезпечними.</p>
+
+                    <p>Завдання, які звертаються до різних ресурсів або ресурсів, що тільки для читання, можуть бути доступні через різні потоки, що дозволяє значно прискорити обробку.</p>
+                    <p>Ця книга буде присвячена двом основним способам паралельного виконання коду в <b>iOS</b>. У першому розділі <b>Grand Central Dispatch</b> будуть розглянуті поширені сценарії, в яких ви зможете реалізувати паралелізм. Ви дізнаєтеся,
+                        як запускати завдання у фоновому режимі, як групувати завдання разом і як справлятися з обмеженням кількості завдань, які можуть виконуватися одночасно. До кінця першого розділу ви також зможете краще зрозуміти небезпеки паралелізму
+                        і способи їх уникнути.</p>
+                    <p>У другому розділі ви зосередитеся на класі <b>Operation</b>. Операції, побудовані на основі <b>Grand Central Dispatch</b>, дозволяють обробляти більш складні сценарії, такі як повторно використовуваний код, що виконується у фоновому
+                        потоці, з залежністю одного потоку від іншого і навіть скасуванням операції до її початку або завершення.</p>
+
+                    <p>Більшість сучасних мов програмування передбачають деяку форму паралелізму, і <b>Swift</b>, звичайно, не виняток. У різних мовах використовуються різні механізми обробки паралелізму. <b>C#</b> і <b>Typescript</b>, наприклад, використовують
+                        шаблон <b>async
+                        / await</b>, тоді як <b>Swift</b> використовує замикання для обробки того, що виконується в іншому потоці. Спочатку <b>Swift 5</b> планував реалізувати більш поширений шаблон <b>async / await</b>, але він був видалений з специфікації
+                        до наступного випуску.</p>
+
+                    <br>
+                    <h3>Який наступний крок?</h3>
+                    <p>Ну, наступна сторінка, звичайно! Сподіваємося, що, пройшовши наступні глави, ви зрозумієте, що зможе паралелізм зробити для вашого застосунку, і чому ваші кінцеві користувачі оцінять додаткові зусилля, які ви доклали, щоб додаток працював
+                        якомога швидше. Знання того, коли використовувати <b>Grand Central Dispatch</b> на відміну від підкласу <b>Operation</b> на початку життєвого циклу додатку, заощадить вам години рефакторингу в майбутньому.</p>
+
+
+                </div>
+
+                <nav class="blog-nav nav nav-justified my-5">
+                    <a class="nav-link-prev nav-item nav-link rounded-left" href="blog-post.html">Previous<i class="arrow-prev fas fa-long-arrow-alt-left"></i></a>
+                    <a class="nav-link-next nav-item nav-link rounded-right" href="chapter2.html">Next<i class="arrow-next fas fa-long-arrow-alt-right"></i></a>
+                </nav>
+
+
+
+            </div>
+            <!--//container-->
+        </article>
+
+
+        <footer class="footer text-center py-2 theme-bg-dark">
+
+        </footer>
+
+    </div>
+    <!--//main-wrapper-->
+
+
+    <!-- Javascript -->
+    <script src="assets/plugins/jquery-3.3.1.min.js"></script>
+    <script src="assets/plugins/popper.min.js"></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Page Specific JS -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="assets/js/blog.js"></script>
+
+    <!-- Style Switcher (REMOVE ON YOUR PRODUCTION SITE) -->
+    <script src="assets/js/demo/style-switcher.js"></script>
+
+
+</body>
+
+</html>
