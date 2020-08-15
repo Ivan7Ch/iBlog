@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>9: Залежності між операціями</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blog Template">
+    <meta name="author" content="Xiaoying Riley at 3rd Wave Media">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <!-- FontAwesome JS-->
+    <script defer src="https://use.fontawesome.com/releases/v5.7.1/js/all.js" integrity="sha384-eVEQC9zshBn0rFj4+TU78eNA19HMNigMviK/PU/FFjLXqa/GKPgX58rvt5Z8PLs7" crossorigin="anonymous"></script>
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/monokai-sublime.min.css">
+
+    <!-- Theme CSS -->
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme-1.css">
+
+
+</head>
+
+<body>
+
+    <header class="header text-center">
+
+        <h2 class="blog-name pt-lg-4 mb-0"><a href="index.html">Зміст</a></h2>
+
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+			</button>
+
+            <div id="navigation" class="collapse navbar-collapse flex-column">
+                <div class="profile-section pt-3 pt-lg-0">
+
+                    <ul class="navbar-nav flex-column text-left">
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter1.html"></i>1: Вступ<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter2.html"></i>2: GCD & Операції.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter3.html"></i>3: Черги & Потоки.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter4.html"></i>4: Групи ти Семафори.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter5.html"></i>5: Проблеми багатопотоковості</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter6.html"></i>6: Операції</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter7.html"></i>7: Черги операцій</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter8.html"></i>8: Асинхронні операції</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="chapter9.html"></i>9: Залежності між операціями</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter10.html"></i>10: Скасування операцій</a>
+                        </li>
+                    </ul>
+                    <!--//social-list-->
+                </div>
+                <!--//profile-section-->
+
+
+                <div class="my-2 my-md-3">
+                    <a class=" btn btn-primary " href="index.html ">Home</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-wrapper">
+
+        <article class="blog-post px-3 py-5 p-md-5">
+            <div class="container">
+                <header class="blog-post-header">
+                    <h1 class="title mb-2">Глава 9: Залежності між операціями</h1>
+                    <div class="meta mb-3"><span class="date">Chapter 9: Operation Dependencies</span><span class="time">21 min read</span></div>
+                </header>
+                <div class="blog-post-body">
+                    <br>
+                    <p>У цьому розділі ви дізнаєтеся про залежності між операціями. Залежність однієї операції від іншої дає дві переваги при взаємодії між ними:
+                    </p>
+                    <ol>
+                        <li>Гарантує, що залежна операція не починається до завершення головної операції.</li>
+                        <li>Забезпечує простий спосіб автоматичної передачі даних від першої операції до другої.
+                        </li>
+                    </ol>
+                    <p>Включення залежностей між операціями - одна з основних причин для вибору операцій замість GCD.
+                    </p>
+                    <br>
+                    <h2>Модульна архітектура</h2>
+                    <div class="meta mb-3"><span class="date">Modular design</span></div>
+                    <p>Пригадайте проект про зсув нахилу(tilt shift), який ви створювали. Тепер у вас є операція, яка буде завантажувати зображення з мережі, а також операція, яка застосує фільтер tilt shift. Замість цього ви можете створити одну операцію,
+                        яка виконує обидві задачі, але, зауважте, це не найкращий спосіб з точки зору архітектури.
+                    </p>
+                    <p>В ідеалі класи повинні виконувати одну задачу, забезпечуючи можливість повторного використання всередині і між проектами. Якби ви вбудували мережевий код безпосередньо в операцію зсуву нахилу, то його не можна було б використовувати
+                        для зображення яке вже завантажене. Хоча ви можете додати безліч параметрів ініціалізації, що визначають, чи буде зображення надано або завантажено з мережі, але це сильно розширить клас.</p>
+                    <br>
+                    <h2>Вказання залежностей</h2>
+                    <div class="meta mb-3"><span class="date">Specifying dependencies</span></div>
+                    <p>Щоб додати або видалити залежності потрібно всього один виклик методу залежної операції. Розглянемо вигаданий приклад, в якому ви завантажуєте зображення, декодуєте його, а потім пропускаєте отримане зображення через фільтр зсуву нахилу:
+                    </p>
+                    <img width="352" src="assets/images/cs79.png" style="margin-bottom: 10px;" alt="">
+                    <p>Якщо вам з якоїсь причини необхідно видалити залежність, ви можете просто викликати явно названий метод <b>removeDependency(op :)</b>:
+                    </p>
+                    <img width="376" src="assets/images/cs80.png" style="margin-bottom: 10px;" alt="">
+                    <p>Клас Operation також надає read-only властивість під назвою <b>dependencies</b>, яка буде повертати масив операцій, позначених як залежності для даної операції.
+                    </p>
+                    <br>
+                    <h3>Уникнення піраміди операторів </h3>
+                    <div class="meta mb-3"><span class="date">Avoiding the pyramid of doom</span></div>
+                    <p>У залежностей є ще одна позитивна сторона, яка значно спрощує читання коду. Якщо ви спробуєте написати три пов'язані операції разом з допомогою GCD, ви отримаєте так звану pyramid of doom (піраміду загибелі). Розглянемо наступний псевдокод,
+                        щоб зрозуміти як можна представити попередній приклад за допомогою GCD:
+                    </p>
+                    <img width="630" src="assets/images/cs81.png" style="margin-bottom: 10px;" alt="">
+                    <p>Який з них буде легше зрозуміти і підтримувати junior розробнику? Врахуйте також, що представлений приклад не бере до уваги цикли збереження або перевірки помилок, які реальний код повинен обробляти належним чином.
+                    </p>
+                    <br>
+                    <h2>Остерігайтесь дедлоку</h2>
+                    <div class="meta mb-3"><span class="date">Watch out for deadlock</span></div>
+                    <p>У розділі 5 «Проблеми паралелізму» ви дізналися про deadlock. Кожен раз, коли завдання залежить від когось іншого, з’являється можливість виникнення дедлоку. Уявіть собі ланцюжок залежностей, якщо графік показує пряму лінію, то дедлок-ситуації
+                        немає.
+                    </p>
+                    <img width="600px" src="assets/images/example20.png" style="margin-bottom: 10px;" alt="">
+                    <p>Цілком припустимо, щоб операції з однієї operation queue залежали від операції з іншої operation queue. Навіть в такому випадку, поки немає зациклень, дедлок не стане проблемою.
+                    </p>
+                    <img width="600px" src="assets/images/example21.png" style="margin-bottom: 10px;" alt="">
+                    <p>Однак якщо ви починаєте бачити зациклення, ви майже напевно потрапили в ситуацію із дедлоком.
+                    </p>
+                    <img width="600px" src="assets/images/example22.png" style="margin-bottom: 10px;" alt="">
+                    <p>На попередньому зображенні ви можете побачити в чому проблема:
+                    </p>
+                    <ul>
+                        <li>Операція 2 не може розпочатися, поки не буде виконана операція 5.</li>
+                        <li>Операція 5 не може починатися, поки не буде виконана операція 3.</li>
+                        <li>Операція 3 не може розпочатися, поки не буде виконана операція 2.</li>
+                    </ul>
+                    <p>Якщо ви починаєте і закінчуєте цикл з одним і тим же номером операції, ви потрапляєте в глухий кут (deadlock). Жодна з операцій ніколи не буде виконана. Немає надійного рішення для виходу з тупикової ситуації, і їх може бути складно
+                        знайти, якщо ви не зобразили, чи уявили свої залежності. Якщо ви зіткнетеся з такою ситуацією, у вас немає вибору, окрім як переробити спроектоване вами рішення.</p>
+                    <br>
+                    <h3>Передача даних між операціями</h3>
+                    <div class="meta mb-3"><span class="date">Passing data between operations</span></div>
+                    <p>Тепер, коли у вас є спосіб безпечно зробити одну операцію залежною від іншої, повинен бути спосіб передачі даних між ними. Тут варто скористатися можливостями протоколів. <b>NetworkImageOperation</b> має властивість під ім'ям <b>image</b>.
+                        А як щодо випадку, коли властивість називається інакше? Однією з переваг операцій є їх інкапсуляція і можливість повторного використання. Не можна очікувати, що кожен, хто пише операцію, буде називати внутрішні властивості одинаково.
+                    </p>
+                    <br>
+                    <h3>Використання протоколів </h3>
+                    <div class="meta mb-3"><span class="date">Using protocols</span></div>
+                    <p>Ось що насправді має відбуватися: <i>«Коли ця операція завершиться, якщо все піде добре, я поверну вам у якості результату зображення типу UIImage»</i>. Відкрийте <b>Concurrency.xcodeproj</b> в папці з прикріпленими матеріалами до
+                        цієї глави, а потім створіть новий Swift файл з ім'ям <b>ImageDataProvider.swift</b>. Додайте в файл наступний код:
+                    </p>
+                    <img width="281" src="assets/images/cs82.png" style="margin-bottom: 10px;" alt="">
+                    <p>Будь-яка операція, результатом якої є UIImage, повинна реалізовувати цей протокол. В цьому випадку імена властивостей будуть збігатися, що спрощує життя. Однак пригадайте свою операцію TiltShiftOperation. Дотримуючись угоди про імена
+                        CIFilter, ви назвали цей файл outputImage. Обидва класи повинні відповідати ImageDataProvider.</p>
+                    <br>
+                    <h3>Додавання розширення</h3>
+                    <div class="meta mb-3"><span class="date">Adding extensions</span></div>
+                    <p>Відкрийте <b>NetworkImageOperation.swift</b> і додайте цей код в самий кінець файлу:
+                    </p>
+                    <img width="455" src="assets/images/cs83.png" style="margin-bottom: 10px;" alt="">
+                    <p>Оскільки клас вже містить властивість, точно таку, як передбачено протоколом, більше нічого робити не потрібно. Хоча ви могли б просто додати <b>ImageDataProvider</b> до визначення класу, Swift Style Guide рекомендує замість цього
+                        використовувати розширення.
+                    </p>
+                    <p>Для <b>TiltShiftOperation</b> потрібно зробити трохи більше роботи. Хоча у вас вже є вихідне зображення, ім’я цієї властивості не є image, як визначено протоколом.
+                    </p>
+                    <p>Додайте наступний код в кінець <b>TiltShiftOperation.swift</b>:
+                    </p>
+                    <img width="423" src="assets/images/cs84.png" style="margin-bottom: 10px;" alt="">
+                    <p>Пам'ятайте, що розширення можна розмістити де завгодно, в будь-якому файлі. Оскільки ви створили обидві операції, має сенс, звичайно, розмістити розширення поруч з класом. Однак ви можете використовувати сторонній фреймворк, який ви
+                        не можете редагувати. Якщо операція, яку він надає, дає вам зображення, ви можете створити розширенння до цього класу самостійно у файлі в своєму проекті, і назвати, наприклад, <b>ThirdPartyOperation + Extension.swift</b>.
+                    </p>
+                    <p><b>TiltShiftOperation</b> потребує <b>UIImage</b> в якості вхідних даних. Замість того, щоб просто вимагати ініціалізацію властивості <b>inputImage</b>, тепер ви можете перевірити, чи надає будь-яка з його залежностей UIImage в якості
+                        вихідних даних.
+                    </p>
+                    <p>У <b>TiltShiftOperation.swift</b> в <b>main()</b> змініть перший оператор <b>guard</b> (перший рядок) на це:
+                    </p>
+                    <img width="574" src="assets/images/cs85.png" style="margin-bottom: 10px;" alt="">
+                    <p>У наведеному вище коді ви намагаєтеся розгорнути або вхідне зображення, безпосередньо надане операції, або ланцюжок залежностей для чогось, що надасть нам зображення, переконавшись, що воно дає зображення, відмінне від нуля.
+                    </p>
+                    <p>Якщо жоден з них не допоміг, просто поверніться, не виконуючи ніяких дій.
+                    </p>
+                    <p>Залишився останній шматочок, який змусить все це працювати. Оскільки тепер ви перевіряєте ланцюжок залежностей для зображення, повинен бути спосіб форматувати <b>TiltShiftOperation</b> без надання вхідного зображення. Найпростіший
+                        спосіб не обробляти дані, що вводяться - це зробити в поточному конструкторі за замовчуванням вхідне зображенням рівним nil.
+                    </p>
+                    <p>Налаштуйте свій ініціалізатор, щоб він виглядав наступним чином:
+                    </p>
+                    <img width="266" src="assets/images/cs86.png" style="margin-bottom: 10px;" alt="">
+                    <br>
+                    <h2>Оновлення table view controller</h2>
+                    <div class="meta mb-3"><span class="date">Update the table view controller</span></div>
+                    <p>Поверніться до <b>TiltShiftTableViewController.swift</b> і подивіться, чи зможете ви змінити його так, щоб він завантажував зображення, застосовував фільтер <b>tilt shift</b>, та передавав отримане зображення в cell.
+                    </p>
+                    <p>Щоб це працювало, вам потрібно додати операцію завантаження як залежність для операції зсуву нахилу. Іншими словами, tilt shift залежить від операції завантаження для отримання зображення.
+                    </p>
+                    <p>Замініть рядок в <b>tableView(_: cellForRowAt :)</b>, в якій ви встановлюєте і оголошуєте <b>op</b>, таким кодом:
+                    </p>
+                    <img width="542" src="assets/images/cs87.png" style="margin-bottom: 10px;" alt="">
+                    <p>Замість однієї операції тепер у вас є дві операції і залежність між ними.
+                    </p>
+                    <p>Потім, замість того, щоб встановлювати <b>completionBlock</b> для операції, передайте його для <b>tiltShiftOp</b>, тому що він поверне вам зображення.
+                    </p>
+                    <p>Замініть весь <b>completion block</b> наступним:
+                    </p>
+                    <img width="749" src="assets/images/cs88.png" style="margin-bottom: 10px;" alt="">
+                    <p>Нарешті, замініть рядок, в якому ви додаєте <b>op</b> в чергу, цими двома рядками:
+                    </p>
+                    <img width="281" src="assets/images/cs89.png" style="margin-bottom: 10px;" alt="">
+                    <p>Незважаючи на те, що ви вказали, що tilt shift залежить від завантаження, вам все одно потрібно додати обидві операції в чергу. Черга буде відстежувати залежності і запускати операцію зсуву нахилу тільки після завершення завантаження.
+                    </p>
+                    <p>Зберіть і запустіть додаток. Ви повинні побачити список зображень зі зміщеним нахилом!
+                    </p>
+                    <img width="300px" src="assets/images/example23.png" style="margin-bottom: 10px;" alt="">
+                    <br>
+                    <h3>Власний completion handler</h3>
+                    <div class="meta mb-3"><span class="date">Custom completion handler </span></div>
+                    <p>У поточному написаному коді використовується <b>completionBlock</b> за замовчуванням, що надається класом <b>Operation</b>. Вам потрібно виконати невелику додаткову роботу, щоб отримати зображення і відправити його назад в основну
+                        чергу. В такому випадку ви можете розглянути можливість додавання кастомного completion block. Повернувшись в <b>TiltShiftOperation.swift</b>, додайте нову необов’язкову властивість для зберігання користувацького completion block.
+                    </p>
+                    <img width="439" src="assets/images/cs90.png" style="margin-bottom: 10px;" alt="">
+                    <p>Потім, в самому кінці методу main(), після запису outputImage викличте цей completion block в основному потоці:
+                    </p>
+                    <img width="391" src="assets/images/cs91.png" style="margin-bottom: 10px;" alt="">
+                    <p>Якщо ви додасте цей шматок коду назад в <b>TiltShiftTableViewController.swift</b>, в <b>tableView(_: cellForRowAt :)</b>, ви можете замінити весь код completion block наступним чином:
+                    </p>
+                    <img width="479" src="assets/images/cs92.png" style="margin-bottom: 10px;" alt="">
+                    <p>Хоча від цих змін немає ніяких функціональних відмінностей або різниці в продуктивності, вони роблять роботу з вашої операцією трохи приємніше для користувача. Ви усунули плутанину з приводу будь-якого можливого циклу збереження і
+                        забезпечили правильну роботу main потоку з UI автоматично.
+                    </p>
+                    <p>Дуже важливо задокументувати той факт, що ваш completion handler виконується в main потоці, а не в потоці, наданим чергою операцій.
+                    </p>
+                    <p>Кінцевий користувач повинен знати, що ви переключаєте потоки на них, щоб вони не робили нічого, що могло б вплинути на додаток.
+                    </p>
+                    <p>Зверніть увагу, що в представленому коментарі є три символи /. Якщо ви використовуєте цей синтаксис, Xcode відобразить цей коментар в Quick Help Inspector.
+                    </p>
+                </div>
+                <nav class=" blog-nav nav nav-justified my-5 ">
+                    <a class="nav-link-prev nav-item nav-link rounded-left " href="chapter8.html ">Previous<i class="arrow-prev fas fa-long-arrow-alt-left "></i></a>
+                    <a class="nav-link-next nav-item nav-link rounded-right " href="chapter10.html">Next<i class="arrow-next fas fa-long-arrow-alt-right "></i></a>
+                </nav>
+            </div>
+            <!--//container-->
+        </article>
+
+
+        <footer class="footer text-center py-2 theme-bg-dark ">
+
+        </footer>
+
+    </div>
+    <!--//main-wrapper-->
+
+
+    <!-- Javascript -->
+    <script src="assets/plugins/popper.min.js "></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js "></script>
+
+    <!-- Custom JS -->
+    <script src="assets/js/blog.js "></script>
+
+
+
+</body>
+
+</html>
+
+
+
+
+<!--
+<p style="background-color:rgb(224, 224, 224); padding: 15px; "><i><b>Note:</b> </i></p>
+<img width="120px" src="assets/images/cs30.png" style="margin-bottom: 10px;" alt="">
+
+<br>
+<h2>Повторне використання</h2>
+<div class="meta mb-3"><span class="date">Reusability</span></div>
+-->

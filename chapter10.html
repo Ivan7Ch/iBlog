@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>10: Скасування операцій</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blog Template">
+    <meta name="author" content="Xiaoying Riley at 3rd Wave Media">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <!-- FontAwesome JS-->
+    <script defer src="https://use.fontawesome.com/releases/v5.7.1/js/all.js" integrity="sha384-eVEQC9zshBn0rFj4+TU78eNA19HMNigMviK/PU/FFjLXqa/GKPgX58rvt5Z8PLs7" crossorigin="anonymous"></script>
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/monokai-sublime.min.css">
+
+    <!-- Theme CSS -->
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme-1.css">
+
+
+</head>
+
+<body>
+
+    <header class="header text-center">
+
+        <h2 class="blog-name pt-lg-4 mb-0"><a href="index.html">Зміст</a></h2>
+
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+			</button>
+
+            <div id="navigation" class="collapse navbar-collapse flex-column">
+                <div class="profile-section pt-3 pt-lg-0">
+
+                    <ul class="navbar-nav flex-column text-left">
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter1.html"></i>1: Вступ<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter2.html"></i>2: GCD & Операції.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter3.html"></i>3: Черги & Потоки.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter4.html"></i>4: Групи ти Семафори.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter5.html"></i>5: Проблеми багатопотоковості</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter6.html"></i>6: Операції</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter7.html"></i>7: Черги операцій</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter8.html"></i>8: Асинхронні операції</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter9.html"></i>9: Залежності між операціями</a>
+                        </li>
+
+                        <li class="nav-item active">
+                            <a class="nav-link" href="chapter10.html"></i>10: Скасування операцій</a>
+                        </li>
+                    </ul>
+                    <!--//social-list-->
+                </div>
+                <!--//profile-section-->
+
+
+                <div class="my-2 my-md-3">
+                    <a class=" btn btn-primary " href="index.html ">Home</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-wrapper">
+
+        <article class="blog-post px-3 py-5 p-md-5">
+            <div class="container">
+                <header class="blog-post-header">
+                    <h1 class="title mb-2">Глава 10: Скасування операцій</h1>
+                    <div class="meta mb-3"><span class="date">Chapter 10: Canceling Operations </span><span class="time">14 min read</span></div>
+                </header>
+                <div class="blog-post-body">
+                    <br>
+                    <p>Хоча залежності є потужною стороною операцій, є ще одна особливість, яка недоступна для Grand Central Dispatch, а саме, ви можете скасувати запущену операцію, якщо вона написана правильно. Це дуже корисно для тривалих операцій, які
+                        з часом можуть стати неактуальними. Наприклад, користувач може перейти на інший екран або прокрутити таблицю. Немає сенсу продовжувати завантажувати дані або робити складні обчислення, якщо користувач не збирається бачити результат.</p>
+                    <br>
+                    <h2>Магія скасування</h2>
+                    <div class="meta mb-3"><span class="date">The magic of cancel</span></div>
+                    <p>Після того, як ви додасте операцію в чергу операцій, ви більше не зможете її контролювати. З цього моменту черга буде планувати і керувати операцією. Єдине, що ви зможете зробити - це викликати метод скасування операції.</p>
+                    <img width="520px" src="assets/images/example18.png" style="margin-bottom: 10px;" alt="">
+                    <p>Якщо ви відправляєте запит на зупинку операції, властивість <b>isCancelled</b> поверне <b>true</b>. Спочатку може здатися дивним, що iOS не зупиняє операцію автоматично, але насправді це не так.</p>
+                    <p>Що означає скасування операції для ОС?</p>
+                    <ul>
+                        <li>Чи повинна операція просто викликати помилку?</li>
+                        <li>Чи потрібна очистка пам’яті?</li>
+                        <li>Чи можна скасувати поточний мережевий виклик?</li>
+                        <li>Чи є можливість дати ще комусь знати на стороні сервера, що завдання зупинене?</li>
+                        <li>Чи будуть дані пошкоджені, якщо операція зупиниться?</li>
+                    </ul>
+                    <p>За допомогою невеликого списку проблем, представлених в пунктах вище, ви можете зрозуміти, чому установка властивості, що ідентифікує запит скасування - це все, що можливо автоматично. Реалізація запуску операції за замовчуванням спочатку
+                        перевіряє, чи встановлений прапорець isCancelled, і негайно завершує роботу, якщо це так.</p>
+                    <br>
+                    <h2>Скасування та cancelAllOperations</h2>
+                    <div class="meta mb-3"><span class="date">Cancel and cancelAllOperations</span></div>
+                    <p>Інтерфейс для скасування операції досить простий. Якщо ви просто хочете скасувати певну операцію, ви можете викликати метод скасування. Якщо, з іншого боку, ви хочете скасувати всі операції, які знаходяться в черзі операцій, вам слід
+                        викликати метод <b>cancelAllOperations</b>, визначений у OperationQueue.</p>
+                    <br>
+                    <h2>Оновлення AsyncOperation</h2>
+                    <div class="meta mb-3"><span class="date">Updating AsyncOperation</span></div>
+                    <p>У цьому розділі ви зміните додаток, над яким працювали, щоб операції скасовувалися, коли користувач прокручує відповідну cell. У розділі 8 «Асинхронні операції» ви створили базовий клас AsyncOperation. Якщо ви пам'ятаєте, в цьому коді
+                        була замітка про те, що надана реалізація не була повністю завершена. Пора це виправити! Наданий клас виглядав приблизно так:</p>
+                    <img width="218" src="assets/images/cs66.png" style="margin-bottom: 10px;" alt="">
+                    <p>Якщо ви збираєтеся дозволити скасування вашої операції - що ви завжди повинні робити, якщо у вас немає вагомої причини не робити цього - тоді вам необхідно перевірити змінну isCancelled у відповідних місцях. Відкрийте прикріплений
+                        до цього розділу проект і відкрийте <b>AsyncOperation.swift</b>, щоб змінити метод start:</p>
+                    <img width="234" src="assets/images/cs67.png" style="margin-bottom: 10px;" alt="">
+                    <p>А потім перевизначите метод <b>cancel</b>:</p>
+                    <img width="226" src="assets/images/cs68.png" style="margin-bottom: 10px;" alt="">
+                    <p>Ви, ймовірно, думаєте: «Але скасування вже є частиною базового класу», і матимете рацію. Однак базовий клас нічого не знає про стани, які ви визначили, і тому вам необхідно оновити відповідну властивість.</p>
+                    <p>Важливо, щоб при скасуванні операції властивість <b>isExecuting</b> ставала <b>false</b>, а властивість <b>isFinished</b> стала <b>true</b>. Ваш базовий клас тепер обробляє ці вимоги, відповідним чином оцінюючи властивість <b>state</b>.</p>
+                    <p>Після вищевказаних змін з’являється можливість скасовувати операцію до її початку.</p>
+                    <br>
+                    <h2>Скасування запущеної операції</h2>
+                    <div class="meta mb-3"><span class="date">Canceling a running operation</span></div>
+                    <p>Відкрийте <b>NetworkImageOperation.swift</b> і в main, додайте новий оператор <b>guard</b> відразу після <b>defer</b>:</p>
+                    <img width="344" src="assets/images/cs69.png" style="margin-bottom: 10px;" alt="">
+                    <p>Потім додайте спосіб скасування мережевого запиту під час його виконання. Спочатку додайте в клас нову властивість:</p>
+                    <img width="329" src="assets/images/cs70.png" style="margin-bottom: 10px;" alt="">
+                    <p>Далі в main замініть рядок, де ви створюєте завдання з даними, наступним кодом:</p>
+                    <img width="495" src="assets/images/cs71.png" style="margin-bottom: 10px;" alt="">
+                    <p>Потім видаліть виклик <b>resume</b> в кінці цього блоку. Замість цього виконайте виклик resume в завданні, додавши наступне в кінці main:</p>
+                    <img width="146" src="assets/images/cs72.png" style="margin-bottom: 10px;" alt="">
+                    <p>Нарешті, вам потрібно перевизначити <b>cancel</b>, щоб переконатися, що завдання скасоване. Додайте в клас наступний метод:</p>
+                    <img width="226" src="assets/images/cs73.png" style="margin-bottom: 10px;" alt="">
+                    <p>Тепер скачування можна скасувати в будь-який момент.</p>
+                    <p>Пора дозволити скасування в <b>TiltShiftOperation.swift</b>. Можливо, ви захочете розмістити дві перевірки в основному методі. Безпосередньо перед установкою змінної <b>fromRect</b> зробіть першу перевірку:</p>
+                    <img width="305" src="assets/images/cs74.png" style="margin-bottom: 10px;" alt="">
+                    <p>Потім, безпосередньо перед установкою <b>outputImage</b>, знову додайте ту ж перевірку.</p>
+                    <img width="305" src="assets/images/cs75.png" style="margin-bottom: 10px;" alt="">
+                    <p>Тепер, коли у вас є спосіб скасувати операцію, прийшов час застосувати його і до таблички, щоб операції для cell скасовувалися, коли користувач їх прокручує.</p>
+                    <p>Відкрийте <b>TiltShiftTableViewController.swift</b> і додайте в клас наступну властивість:</p>
+                    <img width="463" src="assets/images/cs76.png" style="margin-bottom: 10px;" alt="">
+                    <p>Це словник, в якому будуть зберігатися операції для конкретної cell (як завантаження, так і tilt shifting). Вам потрібно зберігати операції, щоб була можливість їх скасування.</p>
+                    <p>Додайте наступні рядки в <b>tableView(_: cellForRowAt :)</b> прямо перед <b>return cell</b>, щоб зберегти операції:</p>
+                    <img width="439" src="assets/images/cs77.png" style="margin-bottom: 10px;" alt="">
+                    <p>Якщо операція для цього <b>index path</b> вже існує, скасуйте її і збережіть нову операцію для цього index path.</p>
+                    <p>Потім додайте в кінець класу наступний метод:</p>
+                    <img width="534" src="assets/images/cs78.png" style="margin-bottom: 10px;" alt="">
+                    <p>Це реалізує метод делегата таблиці, який викликається, коли cell виходить за межі екрану. На цьому етапі ви скасуєте операції для цієї cell, переконавшись, що ресурси телефону використовуються тільки для видимих ​​cell.</p>
+                    <p>Зберіть і запустіть додаток.</p>
+                    <img width="300px" src="assets/images/example19.png" style="margin-bottom: 10px;" alt="">
+                    <p>Ви, ймовірно, не помітите великої різниці, але тепер, коли ви швидко прокручуєте таблицю, додаток не завантажує і не фільтрує зображення для кожної cell, яка швидко проходить екраном. Завантаження тих, які вийшли за межі екрану, скасовуються,
+                        що економить мережевий трафік користувача і час автономної роботи, а також прискорює роботу вашого додатку.</p>
+                    <br>
+                    <h2>Який наступний крок?</h2>
+                    <div class="meta mb-3"><span class="date">Where to go from here?</span></div>
+                    <p>Необхідність скасувати операцію не обов'язково означає, що сталося щось погане. Іноді варто скасувати операцію, тому що в ній більше немає необхідності. Якщо ви працюєте з UITableView або UICollectionView, ви можете реалізувати методи
+                        делегата попередньої вибірки, представлені в iOS 10. Коли контролер збирається виконувати попередню вибірку, ви повинні створити операції. Якщо контролер скасовує попередню вибірку, ви також скасовуєте операції.</p>
+                </div>
+                <nav class=" blog-nav nav nav-justified my-5 ">
+                    <a class="nav-link-prev nav-item nav-link rounded-left " href="chapter9.html ">Previous<i class="arrow-prev fas fa-long-arrow-alt-left "></i></a>
+                </nav>
+            </div>
+            <!--//container-->
+        </article>
+
+
+        <footer class="footer text-center py-2 theme-bg-dark ">
+
+        </footer>
+
+    </div>
+    <!--//main-wrapper-->
+
+
+    <!-- Javascript -->
+    <script src="assets/plugins/popper.min.js "></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js "></script>
+
+    <!-- Custom JS -->
+    <script src="assets/js/blog.js "></script>
+
+
+
+</body>
+
+</html>
+
+
+
+
+<!--
+<p style="background-color:rgb(224, 224, 224); padding: 15px; "><i><b>Note:</b> </i></p>
+<img width="120px" src="assets/images/cs30.png" style="margin-bottom: 10px;" alt="">
+
+<br>
+<h2>Повторне використання</h2>
+<div class="meta mb-3"><span class="date">Reusability</span></div>
+-->

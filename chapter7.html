@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>7: Черги операцій</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blog Template">
+    <meta name="author" content="Xiaoying Riley at 3rd Wave Media">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <!-- FontAwesome JS-->
+    <script defer src="https://use.fontawesome.com/releases/v5.7.1/js/all.js" integrity="sha384-eVEQC9zshBn0rFj4+TU78eNA19HMNigMviK/PU/FFjLXqa/GKPgX58rvt5Z8PLs7" crossorigin="anonymous"></script>
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/monokai-sublime.min.css">
+
+    <!-- Theme CSS -->
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme-1.css">
+
+
+</head>
+
+<body>
+
+    <header class="header text-center">
+
+        <h2 class="blog-name pt-lg-4 mb-0"><a href="index.html">Зміст</a></h2>
+
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+			</button>
+
+            <div id="navigation" class="collapse navbar-collapse flex-column">
+                <div class="profile-section pt-3 pt-lg-0">
+
+                    <ul class="navbar-nav flex-column text-left">
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter1.html"></i>1: Вступ<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter2.html"></i>2: GCD & Операції.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter3.html"></i>3: Черги & Потоки.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter4.html"></i>4: Групи ти Семафори.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter5.html"></i>5: Проблеми багатопотоковості</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter6.html"></i>6: Операції</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="chapter7.html"></i>7: Черги операцій</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter8.html"></i>8: Асинхронні операції</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter9.html"></i>9: Залежності між операціями</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter10.html"></i>10: Скасування операцій</a>
+                        </li>
+                    </ul>
+                    <!--//social-list-->
+                </div>
+                <!--//profile-section-->
+
+
+                <div class="my-2 my-md-3">
+                    <a class=" btn btn-primary " href="index.html ">Home</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-wrapper">
+
+        <article class="blog-post px-3 py-5 p-md-5">
+            <div class="container">
+                <header class="blog-post-header">
+                    <h1 class="title mb-2">Глава 7: Черги операцій</h1>
+                    <div class="meta mb-3"><span class="date">Chapter 7: Operation Queues</span><span class="time">13 min read</span></div>
+                </header>
+                <div class="blog-post-body">
+                    <br>
+                    <p>Справжня ефективність операцій проявляється тоді, коли ви дозволяєте OperationQueue обробляти ваші операції. Як і у випадку з DispatchQueue GCD, клас OperationQueue використовується для управління операціями які можуть виконуватися
+                        одночасно.
+                    </p>
+                    <p>В OperationQueue можна передати завдання трьома різними способами:
+                    </p>
+                    <ul>
+                        <li>З допомогою операції.</li>
+                        <li>З допомогою замикання.</li>
+                        <li>Через передачу масиву операцій.</li>
+                    </ul>
+                    <p>Якщо ви реалізували проект з попередньої глави, ви побачили, що операція сама по собі є синхронним завданням. Для того, щоб отримати всі переваги паралелізму операцій, вам потрібно додати їх в OperationQueue.</p>
+                    <br>
+                    <h2>Управління чергою операцій </h2>
+                    <div class="meta mb-3"><span class="date">OperationQueue management</span></div>
+                    <p>Черга операцій (operation queue) виконує готові (ready) операції відповідно до QoS. Після того, як ви додали операцію в чергу, вона буде виконуватися до тих пір, поки завершиться або буде скасована.</p>
+                    <p>Після того, як ви додали операцію в OperationQueue, ви не зможете додати цю ж операцію в будь-яку іншу OperationQueue. Операцій є атомарними завданнями, тому, інколи, їх перетворюють в підкласи, щоб при необхідності їх можна було виконати
+                        кілька разів.
+                    </p>
+                    <br>
+                    <h3>Очікування завершення</h3>
+                    <div class="meta mb-3"><span class="date">Waiting for completion</span></div>
+                    <p>Під капотом OperationQueue, реалізований метод waitUntilAllOperationsAreFinished. Виклик цього методу блокує поточний потік, а це означає, що ви ніколи не повинні викликати цей метод в main потоці.
+                    </p>
+                    <p>Якщо вам потрібен цей метод, то вам слід налаштувати DispatchQueue як послідовну. Якщо вам не потрібно чекати завершення всіх операцій, а потрібно тільки набір операцій, то замість цього ви можете використовувати метод addOperations(_:
+                        waitUntilFinished :) в OperationQueue.
+                    </p>
+                    <br>
+                    <h3>Якість обслуговування QoS</h3>
+                    <div class="meta mb-3"><span class="date">Quality of service</span></div>
+                    <p>OperationQueue дещо схожа на DispatchGroup в тому сенсі, що ви можете додавати операції з різними QoS, і вони будуть виконуватися згідно з відповідним пріоритетом. Якщо вам потрібно пригадати більше інформації по QoS, то поверніться
+                        до глави 3 «Черги і потоки».
+                    </p>
+                    <p>За замовчуванням QoS для черги операцій - .background, але при необхідності ви можете змінити властивість черги операцій qualityOfService на те значення, яке вам потрібно.
+                    </p>
+                    <br>
+                    <h3>Призупинення черги</h3>
+                    <div class="meta mb-3"><span class="date">Pausing the queue</span></div>
+                    <p>Ви можете призупинити чергу відправки(dispatch queue), встановивши значення властивості isSuspended як true. Запущені операції будуть продовжувати виконуватися, але нові додані операції НЕ будуть виконуватися, поки ви не зміните isSuspended
+                        назад на false.
+                    </p>
+                    <br>
+                    <h3>Максимальна кількість операцій</h3>
+                    <div class="meta mb-3"><span class="date">Maximum number of operations</span></div>
+                    <p>Іноді вам потрібно обмежити кількість операцій, які виконуються одночасно. За замовчуванням в черзі відправки буде одночасно виконуватися стільки завдань, скільки ваш пристрій здатний обробити. Якщо ви хочете обмежити це число, просто
+                        встановіть властивість maxConcurrentOperationCount в черзі відправки. Якщо ви встановите maxConcurrentOperationCount на 1, то ви фактично створите послідовну чергу.
+                    </p>
+                    <br>
+                    <h3>Базова DispatchQueue</h3>
+                    <div class="meta mb-3"><span class="date">Underlying DispatchQueue</span></div>
+                    <p>Перш ніж додавати будь-які операції в OperationQueue, ви можете вказати існуючу DispatchQueue як underlyingQueue. Якщо ви це зробите, майте на увазі, що QoS черги відправки буде перевизначати будь-яке значення, встановлене для QoS
+                        черги операцій.
+                    </p>
+                    <p style="background-color:rgb(224, 224, 224); padding: 15px; "><i><b>Note:</b> Не вказуйте основну чергу в якості базової черги!
+                    </i></p>
+                    <br>
+                    <h2>Виправляємо попередній проект</h2>
+                    <div class="meta mb-3"><span class="date">Fix the previous project</span></div>
+                    <p>У попередньому розділі ви налаштували операцію для управління tilt shift(фотоефект), але вона виконувалася синхронно. Тепер, коли ви знайомі з OperationQueue, пропонуємо вам змінити цей проект так, щоб він правильно працював. Ви можете
+                        продовжити роботу з існуючим проектом або відкрити Concurrency.xcodeproj з прикріплених матеріалів до цієї глави.
+                    </p>
+                    <br>
+                    <h3> UIActivityIndicator </h3>
+                    <p>Перша зміна, яку варто зробити - це додавання UIActivityIndicator, щоб вказати користувачеві, що щось відбувається. Відкрийте Main.storyboard і виберіть Tilt Shift Table View Controller. Додайте індикатор активності в центр зображення
+                        і розсташуйте його в центрі по вертикалі та горизонталі.
+                    </p>
+                    <img width="220px" src="assets/images/example12.png" style="margin-bottom: 10px;" alt="">
+                    <p>У Attributes inspector відзначте « Animating» і « Hides When Stopped».
+                    </p>
+                    <img width="220px" src="assets/images/example13.png" style="margin-bottom: 10px;" alt="">
+                    <p>Відкрийте PhotoCell.swift. Додайте новий @IBOutlet з ім'ям ActivityIndicator і зв'яжіть його з нещодавно доданих індикатором активності в storyboard:
+                    </p>
+                    <img width="550" src="assets/images/cs48.png" style="margin-bottom: 10px;" alt="">
+                    <p>Потім додайте в PhotoCell наступну обчислювану властивість(computed property):
+                    </p>
+                    <img width="416" src="assets/images/cs49.png" style="margin-bottom: 10px;" alt="">
+                    <br>
+                    <h3>Оновлення таблиці</h3>
+                    <div class="meta mb-3"><span class="date">Updating the table</span></div>
+                    <p>Перейдіть до TiltShiftTableViewController.swift. Щоб додати операції в чергу, вам необхідно її створити. Додайте в початок класу наступну властивість:
+                    </p>
+                    <img width="320" src="assets/images/cs50.png" style="margin-bottom: 10px;" alt="">
+                    <p>Потім ввесь код в tableView (_: cellForRowAt :) між створенням зображення і поверненням cell наступним чином:
+                    </p>
+                    <img width="749" src="assets/images/cs51.png" style="margin-bottom: 10px;" alt="">
+                    <p>Замість того, щоб вручну викликати запуск операції, додайте її в чергу, яка буде і запускати її та завершувати. Крім того, за замовчуванням черга працює в фоновому режимі, тому ви більше не будете блокувати main потік.
+                    </p>
+                    <p>Коли операція завершується, викликається completionBlock без аргументів. Тепер потрібно відправити свій код назад в main потік. Якщо ви можете отримати посилання на cell (якщо вона не була прокручена), то вам потрібно виключити activity
+                        indicator і оновити зображення.
+                    </p>
+                    <p>Якщо ви додасте операцію в чергу, то вам більше не потрібно буде викликати op.start ().
+                    </p>
+                    <p>Запустіть додаток і спробуйте знову проскролити таблицю.
+                    </p>
+                    <img width="350px" src="assets/images/example14.png" style="margin-bottom: 10px;" alt="">
+                    <p>Тепер, коли ваш код працює в асинхронному режимі, прокрутка таблиці стала набагато плавнішою. Хоча така зміна не робить нічого для підвищення продуктивності коду, але вона гарантує, що UI не буде заблокований.
+                    </p>
+                    <p>Ви можете подумати: «Чим це відрізняється від того, щоб робити це з GCD?» Прямо зараз різниці немає. Але в наступних декількох розділах ви розширите можливості операцій, і причина змін стане ясною.
+                    </p>
+                    <br>
+                    <h2>Який наступний крок?</h2>
+                    <div class="meta mb-3"><span class="date">Where to go from here?</span></div>
+                    <p>Таблиця в даний час завантажує і фільтрує кожне зображення кожного разу, коли відображається клітинка (cell). Подумайте, як ви можете реалізувати кешування, щоб підвищити продуктивність.
+                    </p>
+                    <p>Проект просувається добре, але він використовує статичні зображення. У наступному розділі ви познайомитеся з мережевими операціями.
+                    </p>
+                </div>
+                <nav class=" blog-nav nav nav-justified my-5 ">
+                    <a class="nav-link-prev nav-item nav-link rounded-left " href="chapter6.html ">Previous<i class="arrow-prev fas fa-long-arrow-alt-left "></i></a>
+                    <a class="nav-link-next nav-item nav-link rounded-right " href="chapter8.html">Next<i class="arrow-next fas fa-long-arrow-alt-right "></i></a>
+                </nav>
+            </div>
+            <!--//container-->
+        </article>
+
+
+        <footer class="footer text-center py-2 theme-bg-dark ">
+
+        </footer>
+
+    </div>
+    <!--//main-wrapper-->
+
+
+    <!-- Javascript -->
+    <script src="assets/plugins/popper.min.js "></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js "></script>
+
+    <!-- Custom JS -->
+    <script src="assets/js/blog.js "></script>
+
+
+
+</body>
+
+</html>
+
+
+
+
+<!--
+    <p style="background-color:rgb(224, 224, 224); padding: 15px; "><i><b>Note:</b> </i></p>
+    <img width="120px" src="assets/images/cs30.png" style="margin-bottom: 10px;" alt="">
+
+    <br>
+    <h2>Повторне використання</h2>
+    <div class="meta mb-3"><span class="date">Reusability</span></div>
+-->

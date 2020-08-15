@@ -35,14 +35,22 @@
                 <div class="profile-section pt-3 pt-lg-0">
                     <img class="profile-image mb-3 rounded-circle mx-auto" src="assets/images/ava.jpeg" alt="image">
 
-                    <div class="bio mb-3">Hi, my name is Ivan Chernetskiy. I`m iOS developer. In this book I will tell you all about multithreading and concurrency.<br></div>
+                    <div class="bio mb-3">
+                        <p>У цій книзі ви зможете дізнатися про основи паралельності, що це таке та які проблеми вирішує паралельність. Тут ви зможете дізнатися все про основні концепції, на яких базується паралельність, а саме
+                            <b>Grand Central Dispatch</b> та <b>Operations.</p>
+                                <hr>
+
+                        
+                        <br></div>
+
+
                     <!--//bio-->
                     <ul class="social-list list-inline py-3 mx-auto">
-                        <li class="list-inline-item"><a href="#"><i class="fab fa-twitter fa-fw"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="fab fa-telegram fa-fw"></i></a></li>
                         <li class="list-inline-item"><a href="#"><i class="fab fa-linkedin-in fa-fw"></i></a></li>
-                        <li class="list-inline-item"><a href="#"><i class="fab fa-github-alt fa-fw"></i></a></li>
-                        <li class="list-inline-item"><a href="#"><i class="fab fa-stack-overflow fa-fw"></i></a></li>
-                        <li class="list-inline-item"><a href="#"><i class="fab fa-codepen fa-fw"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="fab fa-skype fa-fw"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="fab fa-google fa-fw"></i></a></li>
+                        <li class="list-inline-item"><a href="#"><i class="fas fa-phone fa-fw"></i></a></li>
                     </ul>
                     <!--//social-list-->
                     <hr>
@@ -60,27 +68,22 @@
     <div class="main-wrapper">
         <section class="cta-section theme-bg-light py-5">
             <div class="container text-center">
-                <h2 class="heading">Паралельність в туторіалах - багатопотоковість у Swift з GCD та Operations</h2>
+                <h2 class="heading">Паралельність в туторіалах - багатопотоковість у Swift з GCD та Операціями</h2>
                 <div class="intro">Concurrency by Tutorials - Multithreading in Swift with GCD and Operations</div>
             </div>
             <!--//container-->
+            
+        </section>
+        <section class="cta-section theme-bg-light py-1">
+            <div class="container">
+                <div class="intro">Up to date for iOS 12, <br> Xcode 10 & Swift 4.2</div>
+            </div>
+            <!--//container-->
+            
         </section>
         <section class="blog-list px-3 py-5 p-md-5">
             <div class="container">
-                <div class="item mb-5">
-                    <div class="media">
-                        <div class="media-body">
-                            <h3 class="title mb-1"><a href="blog-post.html">Початок роботи з Паралельністю</a></h3>
-                            <div class="meta mb-1"><span class="time">5 min read</span></div>
-                            <div class="intro">У цій частині книги ви зможете дізнатися про основи паралельності. Ви дізнаєтесь, що це таке, які проблеми вирішує, і чому ви навіть використовуєте паралельність. Далі ви дізнаєтеся основні фрагменти, які містяться в паралельності:
-                                Grand Central Dispatch та Operations.</div>
-                            <a class="more-link" href="blog-post.html">Read more &rarr;</a>
-                        </div>
-                        <!--//media-body-->
-                    </div>
-                    <!--//media-->
-                </div>
-                <!--//item-->
+                
 
                 <div class="item mb-5">
                     <div class="media">
@@ -100,9 +103,9 @@
                     <div class="media">
                         <div class="media-body">
                             <h3 class="title mb-1"><a href="chapter2.html">Глава 2: GCD & Operations</a></h3>
-                            <div class="meta mb-1"><span class="time">15 min read</span></div>
+                            <div class="meta mb-1"><span class="time">11 min read</span></div>
                             <div class="intro">Є два API, які ви будете використовувати при паралельній роботі програми: Grand Central Dispatch (GCD) і Operations. Це не конкуруючі технології і вам не потрібно обирати з чим працювати, тому що Операції побудовані на основі
-                                GCD!...
+                                GCD...
                             </div>
                             <a class="more-link" href="chapter2.html">Read more &rarr;</a>
                         </div>
@@ -112,20 +115,134 @@
                 </div>
                 <!--//item-->
 
-                <nav class="blog-nav nav nav-justified my-5">
-                    <a class="nav-link-prev nav-item nav-link d-none rounded-left" href="#">Previous<i class="arrow-prev fas fa-long-arrow-alt-left"></i></a>
-                    <a class="nav-link-next nav-item nav-link rounded" href="blog-list.html">Next<i class="arrow-next fas fa-long-arrow-alt-right"></i></a>
-                </nav>
+                <div class="item mb-5">
+                    <div class="media">
+                        <div class="media-body">
+                            <h3 class="title mb-1"><a href="chapter3.html">Глава 3: Queues & Threads</a></h3>
+                            <div class="meta mb-1"><span class="time">25 min read</span></div>
+                            <div class="intro">Черги і потоки вже згадувалися декілька разів, і ви, ймовірно, задається питанням, що вони собою представляють на даний момент. У цьому розділі ви отримаєте більш глибоке розуміння того, що таке черги і потоки, і як найкращим
+                                чином включити їх в робочий процес розробки...
+                            </div>
+                            <a class="more-link" href="chapter3.html">Read more &rarr;</a>
+                        </div>
+                        <!--//media-body-->
+                    </div>
+                    <!--//media-->
+                </div>
+                <!--//item-->
+
+                <div class="item mb-5">
+                    <div class="media">
+                        <div class="media-body">
+                            <h3 class="title mb-1"><a href="chapter4.html">Глава 4: Групи ти Семафори</a></h3>
+                            <div class="meta mb-1"><span class="time">18 min read</span></div>
+                            <div class="intro">Іноді замість того, щоб просто поміщати завдання в чергу, вам потрібно обробити групу завдань. Всі вони не повинні запускатися одночасно, але вам потрібно знати, коли вони закінчились. Для такого сценарію Apple пропонує dispatch
+                                groups...
+                            </div>
+                            <a class="more-link" href="chapter4.html">Read more &rarr;</a>
+                        </div>
+                        <!--//media-body-->
+                    </div>
+                    <!--//media-->
+                </div>
+                <!--//item-->
+
+                <div class="item mb-5">
+                    <div class="media">
+                        <div class="media-body">
+                            <h3 class="title mb-1"><a href="chapter5.html">Глава 5: Проблеми багатопотоковості</a></h3>
+                            <div class="meta mb-1"><span class="time">16 min read</span></div>
+                            <div class="intro">Є три добре відомі проблеми, з якими ви можете зіткнутися при реалізації паралелізму в своєму додатку, якщо не будете обережні...
+                            </div>
+                            <a class="more-link" href="chapter5.html">Read more &rarr;</a>
+                        </div>
+                        <!--//media-body-->
+                    </div>
+                    <!--//media-->
+                </div>
+                <!--//item-->
+
+                <div class="item mb-5">
+                    <div class="media">
+                        <div class="media-body">
+                            <h3 class="title mb-1"><a href="chapter6.html">Глава 6: Операції</a></h3>
+                            <div class="meta mb-1"><span class="time">24 min read</span></div>
+                            <div class="intro">Тепер, коли ви майстер ніндзя в Grand Central Dispatch, прийшов час переключитися на операції. У деякій мірі операції працюють дуже схоже на GCD, і це може збивати з пантелику допоки ви не побачите різницю при першому використанні
+                                паралелізму...
+                            </div>
+                            <a class="more-link" href="chapter6.html">Read more &rarr;</a>
+                        </div>
+                        <!--//media-body-->
+                    </div>
+                    <!--//media-->
+                </div>
+                <!--//item-->
+
+                <div class="item mb-5">
+                    <div class="media">
+                        <div class="media-body">
+                            <h3 class="title mb-1"><a href="chapter7.html">Глава 7: Черги операцій</a></h3>
+                            <div class="meta mb-1"><span class="time">13 min read</span></div>
+                            <div class="intro">Справжня ефективність операцій проявляється тоді, коли ви дозволяєте OperationQueue обробляти ваші операції. Як і у випадку з DispatchQueue GCD, клас OperationQueue використовується для управління операціями які можуть виконуватися
+                                одночасно...
+                            </div>
+                            <a class="more-link" href="chapter7.html">Read more &rarr;</a>
+                        </div>
+                        <!--//media-body-->
+                    </div>
+                    <!--//media-->
+                </div>
+                <!--//item-->
+
+                <div class="item mb-5">
+                    <div class="media">
+                        <div class="media-body">
+                            <h3 class="title mb-1"><a href="chapter8.html">Глава 8: Асинхронні Операції</a></h3>
+                            <div class="meta mb-1"><span class="time">20 min read</span></div>
+                            <div class="intro">До цього моменту ваші операції були синхронними, і вони дуже добре працювали з автоматом станів(state machine) класу Operation. Коли операція переходить в стан isReady, система знає, що може почати пошук доступного потоку...
+                            </div>
+                            <a class="more-link" href="chapter8.html">Read more &rarr;</a>
+                        </div>
+                        <!--//media-body-->
+                    </div>
+                    <!--//media-->
+                </div>
+                <!--//item-->
+
+                <div class="item mb-5">
+                    <div class="media">
+                        <div class="media-body">
+                            <h3 class="title mb-1"><a href="chapter9.html">Глава 9: Залежності між операціями</a></h3>
+                            <div class="meta mb-1"><span class="time">21 min read</span></div>
+                            <div class="intro">У цьому розділі ви дізнаєтеся про залежності між операціями. Залежність однієї операції від іншої дає дві переваги при взаємодії між ними...
+                            </div>
+                            <a class="more-link" href="chapter9.html">Read more &rarr;</a>
+                        </div>
+                        <!--//media-body-->
+                    </div>
+                    <!--//media-->
+                </div>
+                <!--//item-->
+
+                <div class="item mb-5">
+                    <div class="media">
+                        <div class="media-body">
+                            <h3 class="title mb-1"><a href="chapter10.html">Глава 10: Скасування операцій</a></h3>
+                            <div class="meta mb-1"><span class="time">14 min read</span></div>
+                            <div class="intro">Хоча залежності є потужною стороною операцій, є ще одна особливість, яка недоступна для Grand Central Dispatch, а саме ...
+                            </div>
+                            <a class="more-link" href="chapter10.html">Read more &rarr;</a>
+                        </div>
+                        <!--//media-body-->
+                    </div>
+                    <!--//media-->
+                </div>
+                <!--//item-->
+
 
             </div>
         </section>
 
-        <footer class="footer text-center py-2 theme-bg-dark">
-
-            <!--/* This template is released under the Creative Commons Attribution 3.0 License. Please keep the attribution link below when using for your own project. Thank you for your support. :) If you'd like to use the template without the attribution, you can buy the commercial license via our website: themes.3rdwavemedia.com */-->
-            <small class="copyright">Designed with <i class="fas fa-heart" style="color: #fb866a;"></i> by <a href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a> for developers</small>
-
-        </footer>
 
     </div>
     <!--//main-wrapper-->

@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Глава 1: Вступ</title>
+    <title>1: Вступ</title>
 
     <!-- Meta -->
     <meta charset="utf-8">
@@ -27,37 +27,73 @@
 <body>
 
     <header class="header text-center">
-        <h1 class="blog-name pt-lg-4 mb-0">Зміст</h1>
 
-        <nav class="navbar navbar-expand-lg navbar-dark">
+        <h2 class="blog-name pt-lg-4 mb-0"><a href="index.html">Зміст</a></h2>
 
-            <ul class="navbar-nav flex-column text-left">
-                <li class="nav-item">
-                    <a class="nav-link" href="blog-post.html"></i>Початок роботи із паралельністю</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="chapter1.html"></i>Глава 1: Вступ<span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="chapter2.html"></i>Глава 2: GCD & Operations</a>
-                </li>
-            </ul>
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+			</button>
+
+            <div id="navigation" class="collapse navbar-collapse flex-column">
+                <div class="profile-section pt-3 pt-lg-0">
+
+                    <ul class="navbar-nav flex-column text-left">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="chapter1.html"></i>1: Вступ<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter2.html"></i>2: GCD & Операції</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter3.html"></i>3: Черги & Потоки</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter4.html"></i>4: Групи ти Семафори</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter5.html"></i>5: Проблеми багатопотоковості</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter6.html"></i>6: Операції</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter7.html"></i>7: Черги операцій</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter8.html"></i>8: Асинхронні операції</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter9.html"></i>9: Залежності між операціями</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter10.html"></i>10: Скасування операцій</a>
+                        </li>
+                    </ul>
+                    <!--//social-list-->
+                </div>
+                <!--//profile-section-->
 
 
+                <div class="my-2 my-md-3">
+                    <a class=" btn btn-primary " href="index.html ">Home</a>
+                </div>
             </div>
         </nav>
     </header>
 
-    <div class="main-wrapper">
+    <div class="main-wrapper ">
 
-        <article class="blog-post px-3 py-5 p-md-5">
-            <div class="container">
-                <header class="blog-post-header">
-                    <h2 class="title mb-2">Глава 1: Вступ</h2>
-                    <div class="meta mb-3"><span class="date">Published 3 months ago</span><span class="time">5 min read</span></div>
+        <article class="blog-post px-3 py-5 p-md-5 ">
+            <div class="container ">
+                <header class="blog-post-header ">
+                    <h2 class="title mb-2 ">Глава 1: Вступ</h2>
+                    <div class="meta mb-3 "><span class="date ">Chapter 1: Introduction</span><span class="time ">5 min read</span></div>
                 </header>
 
-                <div class="blog-post-body">
+                <div class="blog-post-body ">
                     <p>Якщо все зробити правильно, ніхто не буде дякувати вам, але якщо щось буде зроблено неправильно, враження про додаток постраждає.</p>
                     <p>Існує безліч способів оптимізації програми для швидкості, продуктивності, чи зворотнього зв'язку. Ця книга буде присвячена темі <b>паралельності</b>.</p>
 
@@ -102,9 +138,9 @@
 
                 </div>
 
-                <nav class="blog-nav nav nav-justified my-5">
-                    <a class="nav-link-prev nav-item nav-link rounded-left" href="blog-post.html">Previous<i class="arrow-prev fas fa-long-arrow-alt-left"></i></a>
-                    <a class="nav-link-next nav-item nav-link rounded-right" href="chapter2.html">Next<i class="arrow-next fas fa-long-arrow-alt-right"></i></a>
+                <nav class="blog-nav nav nav-justified my-5 ">
+                    <a class="nav-link-prev nav-item nav-link rounded-left " href="index.html">Previous<i class="arrow-prev fas fa-long-arrow-alt-left "></i></a>
+                    <a class="nav-link-next nav-item nav-link rounded-right " href="chapter2.html ">Next<i class="arrow-next fas fa-long-arrow-alt-right "></i></a>
                 </nav>
 
 
@@ -114,7 +150,7 @@
         </article>
 
 
-        <footer class="footer text-center py-2 theme-bg-dark">
+        <footer class="footer text-center py-2 theme-bg-dark ">
 
         </footer>
 
@@ -123,18 +159,18 @@
 
 
     <!-- Javascript -->
-    <script src="assets/plugins/jquery-3.3.1.min.js"></script>
-    <script src="assets/plugins/popper.min.js"></script>
-    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/plugins/jquery-3.3.1.min.js "></script>
+    <script src="assets/plugins/popper.min.js "></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js "></script>
 
     <!-- Page Specific JS -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/highlight.min.js "></script>
 
     <!-- Custom JS -->
-    <script src="assets/js/blog.js"></script>
+    <script src="assets/js/blog.js "></script>
 
     <!-- Style Switcher (REMOVE ON YOUR PRODUCTION SITE) -->
-    <script src="assets/js/demo/style-switcher.js"></script>
+    <script src="assets/js/demo/style-switcher.js "></script>
 
 
 </body>

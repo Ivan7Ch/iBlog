@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>6: Операції</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blog Template">
+    <meta name="author" content="Xiaoying Riley at 3rd Wave Media">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <!-- FontAwesome JS-->
+    <script defer src="https://use.fontawesome.com/releases/v5.7.1/js/all.js" integrity="sha384-eVEQC9zshBn0rFj4+TU78eNA19HMNigMviK/PU/FFjLXqa/GKPgX58rvt5Z8PLs7" crossorigin="anonymous"></script>
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/monokai-sublime.min.css">
+
+    <!-- Theme CSS -->
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme-1.css">
+
+
+</head>
+
+<body>
+
+    <header class="header text-center">
+
+        <h2 class="blog-name pt-lg-4 mb-0"><a href="index.html">Зміст</a></h2>
+
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+			</button>
+
+            <div id="navigation" class="collapse navbar-collapse flex-column">
+                <div class="profile-section pt-3 pt-lg-0">
+
+                    <ul class="navbar-nav flex-column text-left">
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter1.html"></i>1: Вступ<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter2.html"></i>2: GCD & Операції.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter3.html"></i>3: Черги & Потоки.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter4.html"></i>4: Групи ти Семафори.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter5.html"></i>5: Проблеми багатопотоковості</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="chapter6.html"></i>6: Операції</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter7.html"></i>7: Черги операцій</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter8.html"></i>8: Асинхронні операції</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter9.html"></i>9: Залежності між операціями</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter10.html"></i>10: Скасування операцій</a>
+                        </li>
+                    </ul>
+                    <!--//social-list-->
+                </div>
+                <!--//profile-section-->
+
+
+                <div class="my-2 my-md-3">
+                    <a class=" btn btn-primary " href="index.html ">Home</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-wrapper">
+
+        <article class="blog-post px-3 py-5 p-md-5">
+            <div class="container">
+                <header class="blog-post-header">
+                    <h1 class="title mb-2">Глава 6: Операції</h1>
+                    <div class="meta mb-3"><span class="date">Chapter 6: Operations</span><span class="time">24 min read</span></div>
+                </header>
+                <div class="blog-post-body">
+                    <br>
+                    <p>Тепер, коли ви майстер ніндзя в <b>Grand Central Dispatch</b>, прийшов час переключитися на операції. У деякій мірі операції працюють дуже схоже на GCD, і це може збивати з пантелику допоки ви не побачите різницю при першому використанні
+                        паралелізму.
+                    </p>
+                    <p>І GCD, і операції дозволяють вам відправляти шматок коду, який повинен бути запущений в окремому потоці; однак операції дозволяють краще контролювати відправлене завдання.
+                    </p>
+                    <p>Як згадувалося на початку книги, операції будуються поверх GCD. Вони надають додаткові функції, такі як залежності від інших операцій, можливість скасування виконуваної операції і об'єктно-орієнтована модель для підтримки більш складних
+                        вимог.
+                    </p>
+                    <br>
+                    <h2>Повторне використання</h2>
+                    <div class="meta mb-3"><span class="date">Reusability</span></div>
+                    <p>Одна з перших причин, по якій вам може знадобитися створити операцію, полягає в можливості її повторного використання. Якщо у вас є просте завдання «запусти і забути», то швидше за все, вам підійде GCD.</p>
+                    <p>Операція - це об'єкт Swift, тобто ви можете передавати вхідні дані для настройки завдання, реалізації допоміжних методів і т.д. Таким чином, ви можете взяти завдання і виконати його коли-небудь в майбутньому стільки раз, скільки це
+                        потрібно.
+                    </p>
+                    <br>
+                    <h2>Стани оперцій</h2>
+                    <div class="meta mb-3"><span class="date">Operation states</span></div>
+                    <p>Операція має кілька можливих станів, які відбуваються в різних частинах її життєвого циклу:
+                    </p>
+                    <ul>
+                        <li>Коли черга буде створена і готова до запуску, вона перейде в стан <b>isReady</b>. </li>
+                        <li>У якийсь момент ви можете викликати метод запуску, після чого черга перейде в стан <b>isExecuting</b>. </li>
+                        <li>Якщо додаток викликає метод cancel, черга переходить в стан isCancelled, перед тим як перейти в стан <b>isFinished</b>.</li>
+                        <li>Якщо чергу не скасувати, вона перейде безпосередньо з <b>isExecuting</b> в <b>isFinished</b>.</li>
+                    </ul>
+                    <img width="90%" src="assets/images/example7.png" style="margin-bottom: 10px;" alt="">
+                    <p>Всі із вищезазначених станів є булевими <b>read-only</b> властивостями класу <b>Operation</b>. Ви можете звернутися до них в будь-який момент під час виконання завдання, щоб побачити на якому вони етапі.
+                    </p>
+                    <p>Клас <b>Operation</b> обробляє всі ці переходи станів автоматично. Єдині два стани, на які ви можете безпосередньо впливати - це стан <b>isExecuting</b>, запустивши операцію, і стан <b>isCancelled</b>, якщо ви викликаєте метод <b>cancel</b>                        у об'єкта.
+                    </p>
+                    <br>
+                    <h3>BlockOperation</h3>
+                    <p>Ви можете швидко створити операцію з блоку коду, використовуючи клас <b>BlockOperation</b>. Зазвичай ви просто передаєте замикання в його ініціалізатор:
+                    </p>
+                    <img width="289" src="assets/images/cs36.png" style="margin-bottom: 10px;" alt="">
+                    <p><b>BlockOperation</b> управляє паралельним виконанням одного або декількох замикань в глобальній черзі за замовчуванням. Це забезпечує об'єктно-орієнтований враппер для додатків, які вже використовують <b>OperationQueue</b> (обговорюється
+                        в наступному розділі) і не хочуть також створювати окрему <b>DispatchQueue</b>.
+                    </p>
+                    <p>Будучи Операцією, вона може використовувати переваги повідомлень <b>KVO (Key-Value Observing)</b>, залежностей і всього іншого, що забезпечує Операція.
+                    </p>
+                    <p>З назви класу не відразу видно, що <b>BlockOperation</b> управляє групою замикань. Він діє аналогічно до <b>dispatch group</b> в тому сенсі, що він позначає себе як завершений, коли всі замикання завершені. У наведеному вище прикладі
+                        показано додавання одного замикання до операції. Однак ви можете додати кілька елементів.
+                    </p>
+                    <p style="background-color:rgb(224, 224, 224); padding: 15px; "><i><b>Note:</b>  Завдання в BlockOperation виконуються паралельно. Якщо вам потрібно, щоб вони запускалися послідовно, відправте їх у приватну чергу DispatchQueue або налаштуйте залежності.                    </i></p>
+                    <br>
+                    <h2>Багатоблокові оперції</h2>
+                    <div class="meta mb-3"><span class="date">Multiple block operations  </span></div>
+                    <p>У матеріалах, прикріплених до цієї глави ви знайдете playground під назвою <b>BlockOperation.playground</b>. Цей playground надає функцію duration за замовчуванням для синхронізації вашого коду, яку ви незабаром будете використовувати.
+                    </p>
+                    <p>Якщо ви хочете додати замикання до BlockOperation, вам потрібно буде викликати метод <b>addExecutionBlock</b> і просто передати в нього нове замикання. Вставте наступний код в playground:
+                    </p>
+                    <img width="384" src="assets/images/cs37.png" style="margin-bottom: 10px;" alt="">
+                    <p>Наведений вище код розбиває речення за пробілами, таким чином ви отримаєте масив слів. Для кожного слова до операції додається інше замикання, після чого кожне слово друкується як частина wordOperation.
+                    </p>
+                    <p>Відкрийте консоль (⇧ + ⌘ + Y), а потім запустіть playground. Речення виводиться у консоль по одному слову в рядку, але у довільному порядку. Пам'ятайте, що BlockOperation виконується паралельно, а не послідовно, і, отже, порядок виконання
+                        не є детермінованим.
+                    </p>
+                    <img width="100%" src="assets/images/example8.png" style="margin-bottom: 10px;" alt="">
+                    <p>Прийшов час вивчити невеликий урок по паралелізму за допомогою згаданої раніше допоміжної функції тривалості (duration function).
+                    </p>
+                    <p>Додайте затримку в дві секунди відразу після виклику друку зі наступним рядком:
+                    </p>
+                    <img width="162" src="assets/images/cs38.png" style="margin-bottom: 10px;" alt="">
+                    <p>Потім інкапсулюйте виклик start наданого функцією duration:
+                    </p>
+                    <img width="241" src="assets/images/cs39.png" style="margin-bottom: 10px;" alt="">
+                    <p>Подивіться на загальний час, що відображається в рядку, де ви викликаєте duration.
+                    </p>
+                    <img width="100%" src="assets/images/example9.png" style="margin-bottom: 10px;" alt="">
+                    <p>Незважаючи на те, що кожна операція триває дві секунди, загальний час самої операції складає трохи більше двох секунд, а не 10 секунд (п'ять виводів по дві секунди кожен).
+                    </p>
+                    <p>Пам'ятайте, що <b>BlockOperation</b> працює аналогічно до <b>DispatchGroup</b> - це означає, що буде легко дізнатися, коли всі операції завершені.
+                    </p>
+                    <p>Створений <b>completionBlock</b> буде виконано після завершення всіх замикань, доданих в операцію. Додайте наступний код у playground, перш ніж викликати <b>duration</b>, а потім запустіть знову, щоб побачити результат:
+                    </p>
+                    <img width="368" src="assets/images/cs40.png" style="margin-bottom: 10px;" alt="">
+                    <br>
+                    <h3>Підклас Operation</h3>
+                    <div class="meta mb-3"><span class="date">Multiple block operations  </span></div>
+                    <p>Клас <b>BlockOperation</b> відмінно підходить для простих завдань, але при виконанні більш складної роботи або для багаторазового використання компонентів вам потрібно створити підклас <b>Operation</b>.
+                    </p>
+                    <p>Відкрийте <b>Concurrency.xcodeproj</b> у папці із прикріпленими матеріалами. Створіть і запустіть проект, а потім натисніть кнопку «Show Tilt Shift» у верхній частині екрану.
+                    </p>
+                    <p>Ви побачите приклад того, з чим ви будете працювати наступні декілька розділів. Зображення, що відображається у верхній частині екрану, є вихідним зображенням. Через кілька секунд обробки під ним з'явиться зображення зі зміщеним нахилом
+                        (Tilt Shift).
+                    </p>
+                    <img width="350px" src="assets/images/example10.png" style="margin-bottom: 40px;" alt="">
+                    <p><b>Tilt shifting</b> - це метод, який використовується у фотографії для зміни глибини різкості. Якщо ви порівняєте два зображення, ви побачите, що центр нижнього зображення все ще знаходиться у фокусі, але все навколо нього розмито.
+                    </p>
+                    <p>Приклад проекту містить файл <b>TiltShiftFilter.swift</b>, який є підкласом <b>CIFilter</b>. Зверніть увагу, що він відмінно працює в освітніх цілях, оскільки код дуже простий і зрозумілий, але далеко не оптимальний з точки зору продуктивності.
+                        Якщо вам потрібно використовувати tilt shift в реальному додатку, то існують набагато кращі рішення.
+                    </p>
+                    <p>Якщо ви вже натиснули кнопку «Show Table View», ви, ймовірно, встигли побачити порожню табличку! Час її побудувати.
+                    </p>
+                    <br>
+                    <h3>Tilt shift не правильним шляхом</h3>
+                    <div class="meta mb-3"><span class="date">Tilt shift the wrong way</span></div>
+                    <p>Оскільки за словами майстра Йоди, «найбільший вчитель - це невдача», ви спочатку будете реалізовувати <b>tilt shift</b> простим способом, яким спробували б реалізувати це більшість новачків.
+                    </p>
+                    <p>Як згадувалося раніше, ви можете побачити, як виконується <b>tilt shift</b>, глянувши на <b>TiltShiftFilter.swift</b>. Якщо ви не знайомі з Core Image, ознайомтеся з «<b>Core Image Tutorial: Getting Started</b>» за адресою https://bit.ly/2TF8Rba.
+                        Хоча це і не потрібно для продовження, але може бути корисно для розуміння роботи фільтрів в наступних прикладах.
+                    </p>
+                    <p>Приклад проекту містить десять зображень в своєму Asset Catalog для використання. Для простоти вони названі просто від 0 до 9. Відкрийте <b>TiltShiftTableViewController.swift</b> у вікні редактора Xcode і додайте наступний код в метод
+                        <b>tableView(_: cellForRowAt :)</b>, безпосередньо перед рядком <b>return cell</b>:
+                    </p>
+                    <img width="337" src="assets/images/cs41.png" style="margin-bottom: 10px;" alt="">
+                    <p>Він дозволить отримати зображення з Asset Catalog. Потім додайте наступний код, щоб відфільтрувати зображення перед рядком <b>return cell</b>:
+                    </p>
+                    <img width="559" src="assets/images/cs47.png" style="margin-bottom: 10px;" alt="">
+                    <p>Вам потрібно відфільтрувати зображення, використовуючи <b>TiltShiftFilter</b>, і, якщо все вийде, ви повинні отримати вихідне зображення. Якщо щось піде не так, то виведеться повідомлення про помилку. Вихідне зображення має тип <b>CIImage</b>.
+                        Щоб відобразити його, вам потрібно перетворити його в <b>UIImage</b>. Додайте наступний код над оператором <b>return cell</b>:
+                    </p>
+                    <img width="606" src="assets/images/cs42.png" style="margin-bottom: 10px;" alt="">
+                    <p>Вам потрібно використати <b>CIContext</b>, щоб перетворити його назад в <b>UIImage</b>, який ви можете відобразити y <b>PhotoCell</b>.
+                    </p>
+                    <p style="background-color:rgb(224, 224, 224); padding: 15px; "><i><b>Note:</b> Ваш телефон буде виконувати операції Core Image на порядок швидше, ніж ваш Mac. Якщо ви працюєте на симуляторі, змініть кількість рядків в поданні таблиці з 10 до двох. Я рекомендую вам протестувати роботу додатку на реальному пристрої iOS!</i></p>
+                    <p>Переконайтеся, що консоль Xcode відкрита (⇧ + ⌘ + Y), а потім зберіть і запустіть проект.
+                    </p>
+                    <p>Як тільки додаток запуститься, натисніть на кнопку <b>Show Table View</b> і подивіться вікно консолі. Залежно від швидкості вашого пристрою або симулятора, ви побачите, що фільтрація займає небагато часу. Якщо ви будете прогортати
+                        табличку, ви побачите ривки, коли програма намагатиметься виконати фільтр <b>tilt shift</b>.
+                    </p>
+                    <img width="350px" src="assets/images/example11.png" style="margin-bottom: 40px;" alt="">
+                    <br>
+                    <h3>Tilt shift майже правильним шляхом</h3>
+                    <div class="meta mb-3"><span class="date">Tilt shift almost correctly </span></div>
+                    <p>На цьому етапі опрацювання <b>Core Image</b> потрібно помістити в підклас <b>Operation</b>. Вам знадобиться як вхідне, так і вихідне зображення, тому нам потрібні відповідні дві властивості(properties). Вхідне зображення ніколи не
+                        повинно змінюватися, тому є сенс передати його ініціалізатор і зробити <b>private</b>.
+                    </p>
+                    <p>Створіть новий Swift файл з ім'ям <b>TiltShiftOperation.swift</b> і замініть його вміст наступним:
+                    </p>
+                    <img width="376" src="assets/images/cs43.png" style="margin-bottom: 10px;" alt="">
+                    <p>У файлі <b>TiltShiftTableViewController.swift</b> варто створити властивість <b>context</b>.
+                    </p>
+                    <p>Якщо ви зробите його простою властивістю TiltShiftOperation, ви будете мати новий контекст для кожного екземпляра TiltShiftOperation. CIContext слід використовувати повторно, коли це можливо, і в документації Apple явно зазначено,
+                        що CIContext є потокобезпечим, тому ви можете зробити його статичним.
+                    </p>
+                    <p>Додайте властивість context на початку вашого класу:
+                    </p>
+                    <img width="352" src="assets/images/cs44.png" style="margin-bottom: 10px;" alt="">
+                    <p>Все, що залишилося зробити зараз, це перевизначити метод main, який буде викликатися при запуску вашої операції. Ви можете скопіювати код прямо з методу <b>tableView (_: cellForRowAt :)</b> і просто зробити кілька незначних змін:
+                    </p>
+                    <img width="788" src="assets/images/cs45.png" style="margin-bottom: 10px;" alt="">
+                    <p>Зверніть увагу, що всі посилання на table view cell видалені, а контекст є статичною властивісттю, але в іншому все працює однаково. Якщо фільтр застосований успішно, outputImage матиме значення, але якщо щось піде не так, то воно
+                        залишиться nil.
+                    </p>
+                    <p>Все, що залишилося зробити зараз - це переробити table view, щоб використовувати нову операцію. Якщо ви хочете запустити операцію вручну, ви можете викликати її метод запуску. Поверніться до TiltShiftTableViewController.swift і оновіть
+                        <b>tableView(_: cellForRowAt :)</b>, щоб він виглядав так:
+                    </p>
+                    <img width="876" src="assets/images/cs46.png" style="margin-bottom: 10px;" alt="">
+                    <p>Перш ніж ви знову запустите додаток, приділіть час тому, щоб розглянути нові зміни і зрозуміти їх вплив на роботу кінцевого користувача.
+                    </p>
+                    <p>Реальність виправдала ваші очікування? Чи були ви здивовані відсутністю приросту продуктивності між цією версією програми і попередньою версією? Коли ви викликаєте метод start безпосередньо в операції, ви виконуєте синхронний виклик
+                        поточного потоку (main потоку). Таким чином, хоча код був перетворений в підклас Operation, ви ще не використовуєте можливості паралелізму, що надаються в ньому.
+                    </p>
+                    <p style="background-color:rgb(224, 224, 224); padding: 15px; "><i><b>Note:</b> Крім того, що виклик start запускає операцію в поточному потоці, він також може привести до помилки, якщо операція ще не готова до запуску. Як правило, ви не повинні викликати запуск вручну.
+                    </i></p>
+                    <p>У наступному розділі ви почнете по-справжньому використовувати переваги класу Operation і вирішите цю синхронну проблему.
+                    </p>
+                </div>
+                <nav class=" blog-nav nav nav-justified my-5 ">
+                    <a class="nav-link-prev nav-item nav-link rounded-left " href="chapter5.html ">Previous<i class="arrow-prev fas fa-long-arrow-alt-left "></i></a>
+                    <a class="nav-link-next nav-item nav-link rounded-right " href="chapter7.html">Next<i class="arrow-next fas fa-long-arrow-alt-right "></i></a>
+                </nav>
+            </div>
+            <!--//container-->
+        </article>
+
+
+        <footer class="footer text-center py-2 theme-bg-dark ">
+
+        </footer>
+
+    </div>
+    <!--//main-wrapper-->
+
+
+    <!-- Javascript -->
+    <script src="assets/plugins/popper.min.js "></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js "></script>
+
+    <!-- Custom JS -->
+    <script src="assets/js/blog.js "></script>
+
+
+
+</body>
+
+</html>
+
+
+
+
+<!--
+    <p style="background-color:rgb(224, 224, 224); padding: 15px; "><i><b>Note:</b> </i></p>
+    <img width="120px" src="assets/images/cs30.png" style="margin-bottom: 10px;" alt="">
+    <div class="meta mb-3"><span class="date">Synchronous waiting</span></div>
+-->

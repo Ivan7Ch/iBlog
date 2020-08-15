@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>8: Асинхронні операції</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blog Template">
+    <meta name="author" content="Xiaoying Riley at 3rd Wave Media">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <!-- FontAwesome JS-->
+    <script defer src="https://use.fontawesome.com/releases/v5.7.1/js/all.js" integrity="sha384-eVEQC9zshBn0rFj4+TU78eNA19HMNigMviK/PU/FFjLXqa/GKPgX58rvt5Z8PLs7" crossorigin="anonymous"></script>
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/monokai-sublime.min.css">
+
+    <!-- Theme CSS -->
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme-1.css">
+
+
+</head>
+
+<body>
+
+    <header class="header text-center">
+
+        <h2 class="blog-name pt-lg-4 mb-0"><a href="index.html">Зміст</a></h2>
+
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+			</button>
+
+            <div id="navigation" class="collapse navbar-collapse flex-column">
+                <div class="profile-section pt-3 pt-lg-0">
+
+                    <ul class="navbar-nav flex-column text-left">
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter1.html"></i>1: Вступ<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter2.html"></i>2: GCD & Операції.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter3.html"></i>3: Черги & Потоки.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter4.html"></i>4: Групи ти Семафори.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter5.html"></i>5: Проблеми багатопотоковості</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter6.html"></i>6: Операції</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter7.html"></i>7: Черги операцій</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="chapter8.html"></i>8: Асинхронні операції</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter9.html"></i>9: Залежності між операціями</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter10.html"></i>10: Скасування операцій</a>
+                        </li>
+                    </ul>
+                    <!--//social-list-->
+                </div>
+                <!--//profile-section-->
+
+
+                <div class="my-2 my-md-3">
+                    <a class=" btn btn-primary " href="index.html ">Home</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-wrapper">
+
+        <article class="blog-post px-3 py-5 p-md-5">
+            <div class="container">
+                <header class="blog-post-header">
+                    <h1 class="title mb-2">Глава 8: Асинхронні Операції</h1>
+                    <div class="meta mb-3"><span class="date">Chapter 8: Asynchronous Operations</span><span class="time">20 min read</span></div>
+                </header>
+                <div class="blog-post-body">
+                    <br>
+                    <p>
+                        До цього моменту ваші операції були синхронними, і вони дуже добре працювали з автоматом станів(state machine) класу Operation. Коли операція переходить в стан <b>isReady</b>, система знає, що може почати пошук доступного потоку.
+                    </p>
+                    <p>
+                        Як тільки планувальник(scheduler) знайде потік, в якому може бути запущена операція, вона перейде в стан <b>isExecuting</b>. Після цього ваш код виконується, і по завершенню переходить в стан <b>isFinished</b>.
+                    </p>
+                    <img width="350px" src="assets/images/example15.png" style="margin-bottom: 10px;" alt="">
+                    <p>
+                        Але як це все буде працювати з асинхронними операціями? Коли метод <b>main</b> операції виконується, він запускає асинхронно завдання, а потім завершує роботу. Стан операції не може переключитися на <b>isFinished</b> в цей момент,
+                        тому що асинхронний метод, ймовірно, ще не завершений.
+                    </p>
+                    <img width="350px" src="assets/images/example16.png" style="margin-bottom: 10px;" alt="">
+                    <br>
+                    <h2>Асинхронні операції</h2>
+                    <div class="meta mb-3"><span class="date">Asynchronous operations</span></div>
+                    <p>
+                        Можна перетворити асинхронний метод в операцію, але це потребує трохи більше роботи. Вам потрібно буде управляти змінами стану вручну, так як операція не може автоматично визначати, коли завдання завершило виконання. Що ще гірше, всі властивості стану
+                        доступні тільки для читання (read-only)!
+                    </p>
+                    <p>
+                        Насправді управляти станами досить просто. Вам просто потрібно буде створите базовий клас, від якого будуть успадковані всі використовувані вами асинхронні операції. Ні, ми не знаємо, чому цей клас не є частиною фреймворка.
+                    </p>
+                    <br>
+                    <h3>AsyncOperation</h3>
+                    <p>
+                        У прикріплених матеріалах до цієї глави відкрийте <b>AsyncAddOperation.playground</b>. Ви можете ігнорувати помилку компіляції, тому що код ще не завершений.
+                    </p>
+                    <br>
+                    <h5>Відстеження стану</h5>
+                    <div class="meta mb-3"><span class="date">State tracking</span></div>
+                    <p>Оскільки стан операції є read-only, вам спочатку потрібно зробити можливість відстежувати зміни в режимі читання-запису, тому створіть перерахування <b>State</b> у верхній частині файлу:
+                    </p>
+                    <img width="400" src="assets/images/cs52.png" style="margin-bottom: 10px;" alt="">
+                    <p>Ще в главі 6 «Операції» згадувалося, що клас <b>Operation</b> використовує <b>KVO notifications</b>. При зміні стану <b>isExecuting</b>, наприклад, буде надіслано <b>KVO</b>-повідомлення. Створені вами стани не повинні починатися із
+                        префіксу 'is' і повинні бути в нижньому регістрі.
+                    </p>
+                    <p>Написана вами обчислювальна властивість <b>keyPath</b> допомагає підтримувати вищезгадані повідомлення KVO. Коли ви звертаєтесь до keyPath вашого поточного стану, перша буква значення стану буде починатися з великої літери і перед
+                        значенням буде префікс 'is'. Таким чином, коли ваш стан встановлено на виконання, keyPath поверне <b>isExecuting</b>, що відповідає властивості в базовому класі Operation.
+                    </p>
+                    <p>Зверніть увагу на модифікатор <b>fileprivate</b>. Це той випадок, коли він став у пригоді. KeyPath повинен бути доступний для всього файлу, але не ззовні. Якщо ви просто зробили б його закритим, то він не був би видимий за межами самого
+                        перерахування.
+                    </p>
+                    <p>Тепер, коли у вас є тип вашого стану, вам знадобиться змінна для зберігання стану. Оскільки вам необхідно відправляти відповідні повідомлення KVO при зміні значення, варто додати <b>property observers</b>. Додайте наступний код в клас
+                        <b>AsyncOperation</b> в розділі <b>//Create state management</b>:
+                    </p>
+                    <img width="423" src="assets/images/cs53.png" style="margin-bottom: 10px;" alt="">
+                    <p>За замовчуванням ваш стан <b>.ready</b>. Коли ви змінюєте значення стану, ви фактично відправляєте чотири повідомлення KVO! Впевніться, що зрозуміли що відбувається і чому там чотири записи, а не два.
+                    </p>
+                    <p>Розглянемо випадок, коли ви готові змінити стан. В цей момент виконаються наступні оновлення: isReady стане false, а isExecuting стане true. Будуть відправлені ці чотири повідомлення KVO:
+                    </p>
+                    <ul>
+                        <li>Зміниться на isReady.
+                        </li>
+                        <li>Зміниться на isExecuting.
+                        </li>
+                        <li>Змінився на isReady.
+                        </li>
+                        <li>Змінився на isExecuting.
+                        </li>
+                    </ul>
+                    <p>Базовий клас Operation повинен знати, що властивості isExecuting і isReady змінюються.
+                    </p>
+                    <br>
+                    <h5>Основні властивості</h5>
+                    <div class="meta mb-3"><span class="date">Base properties</span></div>
+                    <p>Тепер, коли у вас є спосіб відслідковувати зміни стану і сигналізувати, що вони дійсно були виконані, вам необхідно перевизначити екземпляри деяких методів базового класу. Додайте ці три перевизначення в клас нижче <i>//Override properties</i>:
+                    </p>
+                    <img width="376" src="assets/images/cs54.png" style="margin-bottom: 10px;" alt="">
+                    <p style="background-color:rgb(224, 224, 224); padding: 15px; "><i><b>Note:</b> Дуже важливо включити перевірку <i>isReady</i> в метод базового класу, оскільки ваш код не знає що відбувається, поки планувальник визначає, чи готовий він знайти для вашої операції потік.
+                        </i>
+                    </p>
+                    <p>Остання властивість, яку потрібно перевизначити, просто вказує, що ви дійсно використовуєте асинхронну операцію. Додайте наступний фрагмент коду:
+                    </p>
+                    <img width="313" src="assets/images/cs55.png" style="margin-bottom: 10px;" alt="">
+                    <br>
+                    <h5>Початок операції</h5>
+                    <div class="meta mb-3"><span class="date">Starting the operation</span></div>
+                    <p>Все, що залишилося зробити, це реалізувати метод запуску. Незалежно від того, виконуєте ви операцію вручну чи дозволяєте черзі операцій робити це автоматично, спочатку викликається метод <b>start</b>, а потім він відповідає за виклик
+                        <b>main</b>. Додайте наступний код безпосередньо під <i>//Override start</i>:
+                    </p>
+                    <img width="218" src="assets/images/cs56.png" style="margin-bottom: 10px;" alt="">
+                    <p style="background-color:rgb(224, 224, 224); padding: 15px; "><i><b>Note:</b> Зверніть увагу, що цей код не викликає super.start(). В офіційній документації (<a href="https://apple.co/2YcJvEh"><u>https://apple.co/2YcJvEh</u></a>) чітко згадується, що ви не повинні викликати super кожного разу при скасуванні запуску.
+                    </i></p>
+                    <p>Оскільки ви виконуєте завдання асинхронно, метод main майже відразу ж повернеться, тому вам потрібно вручну повернути стан назад в .executing, щоб операція знала, що вона все ще виконується.
+                    </p>
+                    <p>Якби в Swift була концепція абстрактного класу, який не можна створити безпосередньо, ви б позначили цей клас як абстрактний. Іншими словами, ніколи безпосередньо не використовуйте цей клас. Ви завжди повинні створювати підклас AsyncOperation!
+                    </p>
+                    <br>
+                    <h3>Математика - це весело!</h3>
+                    <div class="meta mb-3"><span class="date">Networked TiltShift</span></div>
+                    <p>Погляньте код в playground. Для вас не повинно бути нічого нового, якщо ви вже пройшли глави цієї книги, присвячені GCD. Якщо ви запустите playground ви побачите, що числа додані правильно.
+                    </p>
+                    <p>Ключовою деталлю операції AsyncSumOperation, на яку слід звернути увагу, є те, що ви повинні вручну встановити стан операції на .finished після завершення асинхронного завдання. Якщо ви забудете змінити стан, операція ніколи не буде
+                        відзначена як завершена, і у вас буде так званий нескінченний цикл.
+                    </p>
+                    <br>
+                    <h2>Мережевий TiltShift</h2>
+                    <div class="meta mb-3"><span class="date">Networked TiltShift</span></div>
+                    <p>Пора повернутися до фільтрації зображень. До цих пір ви використовували жорстко запрограмований список зображень. Хіба не було б чудово, якби зображення завантажувалися з мережі? Мережеві операції - це прості асинхронні завдання! Тепер,
+                        коли у вас є спосіб перетворити асинхронне завдання в операцію, приступимо до справи!
+                    </p>
+                    <p>Початковий проект, розташований в папці <b>starter/Concurrency</b>, продовжує створюваний вами проект, але включає два нових файли. Якщо ви хочете продовжити роботу з поточним проектом Xcode, обов'язково завантажте обидва файли.
+                    </p>
+                    <ul>
+                        <li><b>AsyncOperation.swift</b>: це асинхронна операція, створена вами раніше в цій главі.
+                        </li>
+                        <li><b>Photos.plist</b>: це список URL-адрес різних зображень.
+                        </li>
+                    </ul>
+                    <br>
+                    <h3>NetworkImageOperation</h3>
+                    <p>Відкрийте <b>Concurrency.xcodeproj</b> і створіть новий файл Swift з ім'ям <b>NetworkImageOperation.swift</b>. Ви, ймовірно, зробите більше ніж це необхідно для даного проекту, але таким чином у вас буде компонент багаторазового використання
+                        для будь-якого іншого проекту, над яким ви працюватимете.</p>
+                    <p>Загальні вимоги до експлуатації наступні:
+                    </p>
+                    <ol>
+                        <li>Повинен приймати або рядок, що представляє URL-адресу, або фактичну URL-адресу.</li>
+                        <li>Слід завантажувати дані за вказаною URL-адресою.</li>
+                        <li>Якщо надається completion handler типу URLSession, використовуйте його замість декодування.</li>
+                        <li>Якщо у разі успіху немає completion handler, то потрібно встановити необов'язкове значення UIImage.</li>
+                    </ol>
+                    <p>Перші дві вимоги повинні бути досить очевидними. Третя і четверта повинні надати користувачу максимальну гнучкість. У деяких випадках, як у цьому проекті, вам просто потрібно отримати декодований UIImage і готово. Однак інші проекти
+                        можуть вимагати спеціальної обробки. Наприклад, вас може турбувати, в чому полягає конкретна помилка, чи має заголовок HTTP валідний заголовок Content-Type і т.д.
+                    </p>
+                    <p>Почніть із створення підкласу <b>AsyncOperation</b> і оголошення змінних, які будуть потрібні класу. Замініть вміст <b>NetworkImageOperation.swift</b> наступним:
+                    </p>
+                    <img width="574" src="assets/images/cs57.png" style="margin-bottom: 10px;" alt="">
+                    <p>Сигнатура замикання - це та ж сигнатура, яка використовується методами URLSession. Щоб задовольнити вимогам 1 і 2, вам необхідно визначити відповідні ініціалізатори. Додайте наступний код в свій новий клас:
+                    </p>
+                    <img width="788" src="assets/images/cs58.png" style="margin-bottom: 10px;" alt="">
+                    <p>Ймовірно, це не дуже частий випадок, коли хтось захоче явно обробляти дані, які повертаються HTTP, тому має сенс встановити для completion блоку значення за замовчуванням nil. Передача фактичної URL-адреси є «призначеним ініціалізатором»(designated
+                        initializer), тому можна оголосити convenience ініціалізатор, який замість типу URL приймає рядок. Зверніть увагу, що цей конструктор є необов'язковим. Якщо ви передасте рядок, який не може бути перетворена в URL-адресу, конструктор
+                        поверне nil.
+                    </p>
+                    <p>Тепер про саму роботу операції. Перевизначите main і запустіть нову задачу URLSession. Додайте нижче свої ініціалізатори:
+                    </p>
+                    <img width="670" src="assets/images/cs59.png" style="margin-bottom: 10px;" alt="">
+                    <p>Оскільки це асинхронна операція, завжди можливо, що об'єкт буде видалений до того, як відбудеться завантаження даних, тому варто захоплювати self із модифікатором weak.
+                    </p>
+                    <p>Прийшов час зайнятися виконанням завдання. Додайте наступний код в замикання:
+                    </p>
+                    <img width="439" src="assets/images/cs60.png" style="margin-bottom: 10px;" alt="">
+                    <p>Використання defer гарантує, що операція буде відзначена як завершена. У поточному методі вже є три можливих шляхи виходу, плюс ви ніколи не знаєте, які зміни ви можете внести в майбутньому.
+                    </p>
+                    <p>Виконання вимог 3 і 4 так само прості. Якщо користувач надасть completion, ви просто передаєте йому відповідальність за обробку і виходите. Якщо немає, то ви можете декодувати зображення.
+                    </p>
+                    <p>Зверніть увагу, що немає необхідності створювати виключення або повертати будь-які умови помилки. Якщо щось не вдається, властивість image дорівнюватиме nil.
+                    </p>
+                    <br>
+                    <h3>Використання NetworkImageFilter</h3>
+                    <div class="meta mb-3"><span class="date">Using NetworkImageFilter</span></div>
+                    <p>Поверніться до <b>TiltShiftTableViewController.swift</b>. Щоб отримати список URL-адрес, які ви зможете відображати, додайте наступний код в початок вашого контролера:
+                    </p>
+                    <img width="781" src="assets/images/cs61.png" style="margin-bottom: 10px;" alt="">
+                    <p>Це стандартний механізм Swift для читання вмісту файлу .plist і перетворення рядків у об'єкти URL. Можливо, ви раніше не бачили compactMap. Він працює так само, як і map, тільки виключає будь-які елементи nil. У цьому випадку це означає,
+                        що масив urls буде містити тільки дійсні об'єкти URL.
+                    </p>
+                    <p>У <b>tableView(_: cellForRowAt :)</b> замініть наступні два рядки:
+                    </p>
+                    <img width="439" src="assets/images/cs62.png" style="margin-bottom: 10px;" alt="">
+                    <p>Наступним:
+                    </p>
+                    <img width="479" src="assets/images/cs63.png" style="margin-bottom: 10px;" alt="">
+                    <p>Клас <b>TiltShiftOperation</b> використовував <b>outputImage</b> в якості змінної результату, тоді як <b>NetworkImageOperation</b> використовує тільки зображення, тому замініть цю властивість, змінивши наступний рядок:
+                    </p>
+                    <img width="313" src="assets/images/cs64.png" style="margin-bottom: 10px;" alt="">
+                    <p>На:
+                    </p>
+                    <img width="266" src="assets/images/cs65.png" style="margin-bottom: 10px;" alt="">
+                    <p>На цьому етапі ви можете створити і запустити додаток і переглянути великий список зображень.
+                    </p>
+                    <p>Прокрутка буде приємною і плавною, так як UI не зависає ні на якому етапі роботи мережі.
+                    </p>
+                    <img width="350" src="assets/images/example17.png" style="margin-bottom: 10px;" alt="">
+                    <br>
+                    <h2>Наступний крок</h2>
+                    <div class="meta mb-3"><span class="date">Where to go from here?</span></div>
+                    <p>Тепер у вас є багаторазові компоненти як для завантаження зображень по мережі, так і для фільтрації tilt shift. Хіба не було б добре мати можливість використовувати обидва відразу? У наступному розділі ви дізнаєтеся, як пов'язати ці
+                        два елементи разом і, нарешті, зрозумієте, чому варто використовувати операції замість Grand Central Dispatch.
+                    </p>
+                </div>
+                <nav class=" blog-nav nav nav-justified my-5 ">
+                    <a class="nav-link-prev nav-item nav-link rounded-left " href="chapter7.html ">Previous<i class="arrow-prev fas fa-long-arrow-alt-left "></i></a>
+                    <a class="nav-link-next nav-item nav-link rounded-right " href="chapter9.html">Next<i class="arrow-next fas fa-long-arrow-alt-right "></i></a>
+                </nav>
+            </div>
+            <!--//container-->
+        </article>
+
+
+        <footer class="footer text-center py-2 theme-bg-dark ">
+
+        </footer>
+
+    </div>
+    <!--//main-wrapper-->
+
+
+    <!-- Javascript -->
+    <script src="assets/plugins/popper.min.js "></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js "></script>
+
+    <!-- Custom JS -->
+    <script src="assets/js/blog.js "></script>
+
+
+
+</body>
+
+</html>
+
+
+
+
+<!--
+<p style="background-color:rgb(224, 224, 224); padding: 15px; "><i><b>Note:</b> </i></p>
+<img width="120px" src="assets/images/cs30.png" style="margin-bottom: 10px;" alt="">
+
+<br>
+<h2>Повторне використання</h2>
+<div class="meta mb-3"><span class="date">Reusability</span></div>
+-->
