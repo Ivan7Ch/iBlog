@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>5: Проблеми багатопотоковості</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blog Template">
+    <meta name="author" content="Xiaoying Riley at 3rd Wave Media">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <!-- FontAwesome JS-->
+    <script defer src="https://use.fontawesome.com/releases/v5.7.1/js/all.js" integrity="sha384-eVEQC9zshBn0rFj4+TU78eNA19HMNigMviK/PU/FFjLXqa/GKPgX58rvt5Z8PLs7" crossorigin="anonymous"></script>
+
+    <!-- Plugin CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.14.2/styles/monokai-sublime.min.css">
+
+    <!-- Theme CSS -->
+    <link id="theme-style" rel="stylesheet" href="assets/css/theme-1.css">
+
+
+</head>
+
+<body>
+
+    <header class="header text-center">
+
+        <h2 class="blog-name pt-lg-4 mb-0"><a href="index.html">Зміст</a></h2>
+
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+			</button>
+
+            <div id="navigation" class="collapse navbar-collapse flex-column">
+                <div class="profile-section pt-3 pt-lg-0">
+
+                    <ul class="navbar-nav flex-column text-left">
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter1.html"></i>1: Вступ<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter2.html"></i>2: GCD & Операції.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter3.html"></i>3: Черги & Потоки.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter4.html"></i>4: Групи ти Семафори.</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="chapter5.html"></i>5: Проблеми багатопотоковості</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter6.html"></i>6: Операції</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter7.html"></i>7: Черги операцій</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter8.html"></i>8: Асинхронні операції</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter9.html"></i>9: Залежності між операціями</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter10.html"></i>10: Скасування операцій</a>
+                        </li>
+                    </ul>
+                    <!--//social-list-->
+                </div>
+                <!--//profile-section-->
+
+
+                <div class="my-2 my-md-3">
+                    <a class=" btn btn-primary " href="index.html ">Home</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-wrapper">
+
+        <article class="blog-post px-3 py-5 p-md-5">
+            <div class="container">
+                <header class="blog-post-header">
+                    <h1 class="title mb-2">Глава 5: Проблеми багатопотоковості</h1>
+                    <div class="meta mb-3"><span class="date">Chapter 5: Concurrency Problems</span><span class="time">16 min read</span></div>
+                </header>
+                <div class="blog-post-body">
+                    <br>
+                    <p>На жаль, незважаючи на всі переваги, що надають черги, вони не є панацеєю від усіх проблем з продуктивністю. Є три добре відомі проблеми, з якими ви можете зіткнутися при реалізації паралелізму в своєму додатку, якщо не будете обережні:
+                    </p>
+                    <ul>
+                        <li>Стан гонки (<b>Race conditions</b>)</li>
+                        <li>Взаємне блокування (<b>Deadlock</b>)</li>
+                        <li>Інверсія приорітетів (<b>Priority inversion</b>)</li>
+                    </ul>
+                    <br>
+                    <h3>Стан гонки</h3>
+                    <div class="meta mb-3"><span class="date">Race conditions</span></div>
+                    <p>Потоки, які спільно використовують один і той же процес, який також включає в себе ваш додаток, спільно використовують один і той же адресний простір. Це означає, що кожен потік намагається читати і записувати в один і той же загальний
+                        ресурс. Якщо ви не будете обережні, ви можете зіткнутися з race condition, в яких кілька потоків намагаються одночасно записати щось в одну і ту ж змінну.</p>
+                    <p>Розглянемо приклад, в якому виконуються два потоки, і вони обидва намагаються оновити змінну count вашого об'єкта. Читання і запис - це окремі завдання, які комп'ютер не може виконати як одну операцію. Комп'ютери працюють по тактам
+                        (clock cycles), за один такт дозволяється виконати одну операцію.</p>
+                    <p style="background-color:rgb(224, 224, 224); padding: 15px; "><i><b>Note:</b> Не слід плутати такти комп'ютера з тактами на годиннику. IPhone XS має процесор 2,49 ГГц, що означає, що він може виконувати 2 490 000 000 тактів в секунду!</i></p>
+                    <p>Уявімо, що потік 1 і потік 2 хочуть оновити лічильник по такому прикладу:</p>
+                    <img width="115" src="assets/images/cs30.png" style="margin-bottom: 10px;" alt="">
+                    <p>Здається досить невинно, так? Але якщо ви розіб’єте цей вираз на компоненти, то вийде, що в кінцевому випадку, процес виглядає приблизно так:</p>
+                    <ol>
+                        <li>Завантажити значення змінної count в пам'ять. </li>
+                        <li>Збільшити значення count на одиницю в пам'яті.</li>
+                        <li>Записати оновлений count назад на диск.</li>
+                    </ol>
+                    <img width="600px" src="assets/images/example3.png" style="margin-bottom: 10px;" alt="">
+                    <p>Наведений вище графік показує: </p>
+                    <ul>
+                        <li>Потік 1 зчитує значення 1 з лічильника.</li>
+                        <li>За другий такт потік 1 оновлює значення в пам'яті до 2, а потік 2 зчитує значення 1 з лічильника.</li>
+                        <li>За третій такт потік 1 записує значення 2 назад в змінну count. Але потік 2 щойно оновив значення в пам'яті з 1 до 2.</li>
+                        <li>У четвертому тактовом циклі потік 2 також записує значення 2 у лічильник ... не зважаючи на те, що ви очікували побачити значення 3, оскільки два окремих потоки оновлювали значення.</li>
+                    </ul>
+                    <p>Цей тип <b>race condition</b> призводить до неймовірно складної відладки коду через недетерміновану природу цих сценаріїв. Якби потік 1 запустився всього на два такти раніше, ви б отримали значення 3, як і очікувалося, але не забувайте,
+                        скільки цих тактів відбувається в секунду. Ви можете запустити програму 20 разів і отримати правильний результат, потім запустити її ще раз і отримати звіт про помилку.</p>
+                    <p>Зазвичай ви можете вирішувати <b>race conditions</b> за допомогою послідовних черг. Якщо у вашій програмі є змінна, до якої необхідно звертатися одночасно, ви можете інкапсулювати операції читання і запису в приватну чергу, наприклад:</p>
+                    <img width="527" src="assets/images/cs31.png" style="margin-bottom: 10px;" alt="">
+                    <p>За замовчуванням <b>threadSafeCountQueue</b> є послідовною чергою.</p>
+                    <p>Пам'ятайте, це означає, що одночасно може бути запущена тільки одна операція. Таким чином, ви контролюєте доступ до змінної і гарантуєте, що тільки один потік одночасно може отримати доступ до змінної. Якщо ви робите прості читання
+                        / запис, як описано вище, то це одне з найкращих рішеннь.</p>
+                    <p style="background-color:rgb(224, 224, 224); padding: 15px; "><i><b>Note:</b>  Ви можете реалізувати таку ж синхронну чергу для</i> lazy <i>змінних, яка може в подальшому використовуватися декількома потоками. У разі, якщо ви не використаєте синхронну чергу для цієї змінної може відбутися сценарій,
+                        коли один потік почне ініціалізацію цієї lazy змінної, а інший потік захоче отримати доступ до ще не ініціалізованої змінної.</i>
+                    </p>
+                    <br>
+                    <h3>Потоковий бар'єр</h3>
+                    <div class="meta mb-3"><span class="date">Thread barrier</span></div>
+                    <p>Іноді ваш ресурс може вимагати більш складної логіки в своїх методах читання та запису, ніж просто модифікація змінної. Часто вирішення таких проблем пов'язані із семафорами. Блокування дуже важко здійснити належним чином. Замість
+                        цього ви можете використовувати рішення Apple - <b>dispatch barrier</b> із GCD.</p>
+                    <p>Якщо ви створюєте паралельну чергу, ви можете обробляти стільки завдань для читання, скільки вам знадобиться, і всі вони будуть виконуватися паралельно. Але, коли у змінну потрібно щось записати, вам потрібно заблокувати чергу, щоб
+                        завершити всі завдання, які вже відправлені на виконання, і не запускати ніякі нові завдання, поки не завершиться оновлення.</p>
+                    <img width="100%" src="assets/images/example4.png" style="margin-bottom: 10px;" alt="">
+                    <p>Реалізація dispatch barrier виглядає наступним чином:
+                    </p>
+                    <img width="724" src="assets/images/cs32.png" style="margin-bottom: 10px;" alt="">
+                    <p>Зверніть увагу, як потрібно вказувати, що паралельна черга має виконуватися з бар'єром. Бар'єр не почне діяти, поки не завершаться всі попередні зчитування. Як тільки бар'єр вступає в силу, поведінка черги починає нагадувати послідовну
+                        чергу. По завершенні бар’єру всі завдання можуть знову виконуватися паралельно.</p>
+                    <br>
+                    <h2>Взаємне блокування</h2>
+                    <div class="meta mb-3"><span class="date">Deadlock</span></div>
+                    <p><b>Deadlock</b> - досить рідкісне явище в програмуванні на Swift, якщо тільки ви не використовуєте щось на зразок семафорів або інших явних механізмів блокування. Випадковий виклик <b>sync</b> з поточної черги є найпоширенішим випадком,
+                        з яким ви можете зіштовхнутися.
+                    </p>
+                    <p>Якщо ви використовуєте семафори для управління доступом до кількох ресурсів, переконайтеся, що ви робите запит на ресурси в одинаковому порядку. Якщо потік 1 запрошує молоток, а потім пилу, тоді як потік 2 запрошує пилу, а потім молоток,
+                        ви можете отримати <b>deadlock</b>. Потік 1 запрошує і в той же момент отримує молоток, а потік 2 в цей самий момент отримує пилу. Потім потік 1 запрошує доступ на пилу - без звільнення молотка - але потік 2 вже її заблокував,
+                        тому потік 1 повинен очікувати. В той час потік 2 запрошує доступ до пили, але вона вже заблокована потоком 1, тому потік 2 повинен чекати, поки пила стане доступною. Обидва потоки тепер перебувають у глухому куті, оскільки жоден
+                        з них не може продовжувати свою роботи, поки їх запитані ресурси не будуть звільнені, що ніколи не станеться.</p>
+                    <br>
+                    <h2>Інверсія приорітетів</h2>
+                    <div class="meta mb-3"><span class="date">Priority inversion</span></div>
+                    <p>Технічно кажучи, інверсія пріоритетів відбувається тоді, коли черзі з нижчою якістю обслуговування присвоюється більш високий системний пріоритет, ніж черзі з вищою QoS. Якщо ви працювали з відправкою завдань в черги, ви, мабуть, помітили
+                        конструктор async, який приймає параметр qos.</p>
+                    <p>У розділі 3 «Черги і потоки» було згадано, що QoS черги може змінюватися в залежності від переданого їй завдання. Зазвичай, коли ви відправляєте завдання в чергу, воно отримує пріоритет самої черги. Однак, якщо вам необхідно, ви можете
+                        вказати, що конкретна задача повинна мати більш високий чи низький пріоритет.</p>
+                    <p>Якщо ви використовуєте черги <b>.userInitiated</b> і <b>.utility</b> і відправляєте в останню чергу кілька завдань з якістю обслуговування <b>.userInteractive</b> (<b>.userInteractive</b> мають вищий пріоритет, ніж <b>.userInitiated</b>),
+                        ви можете опинитися в ситуації, коли останній черзі призначиться вищий пріоритет операційною системою. Раптово всі завдання у черзі, більшість з яких насправді мають якість обслуговування <b>.utility</b>, в кінцевому випадку будуть
+                        виконані раніше завдань з черги <b>.userInitiated</b>. Цього просто уникнути: якщо вам потрібно більш високу якість обслуговування, використовуйте іншу чергу!</p>
+                    <p>Найбільш поширена ситуація, коли відбувається інверсія пріоритету - коли черга з більш високою якістю обслуговування спільно використовує ресурс з чергою з більш низькою якістю обслуговування. Коли нижня черга блокує об'єкт, більш
+                        висока черга повинна чекати. До тих пір, поки блокування не буде знято, черга з високим пріоритетом фактично зупиняється і нічого не робить, поки виконуються завдання з низьким пріоритетом.</p>
+                    <p>Щоб побачити інверсію пріоритетів на практиці, відкрийте playground <b>PriorityInversion.playground</b> в папці з матеріалами проекту до цієї глави.</p>
+                    <p>У коді ви побачите три потоки з різними значеннями QoS, а також семафор:
+                    </p>
+                    <img width="463" src="assets/images/cs33.png" style="margin-bottom: 10px;" alt="">
+                    <p>Потім різні завдання запускаються в усіх чергах:</p>
+                    <img width="598" src="assets/images/cs34.png" style="margin-bottom: 10px;" alt="">
+                    <p>Якщо ви відкриєте консоль (⇧ + ⌘ + Y), а потім запустите playground, при кожному запуску ви побачите інший порядок:</p>
+                    <img width="305" src="assets/images/cs35.png" style="margin-bottom: 10px;" alt="">
+                    <p>Кінцевий результат завжди один і той самий. Завдання з високим пріоритетом завжди виконується після завдань із середнім і низьким пріоритетами через інверсію пріоритетів.</p>
+                    <img width="100%" src="assets/images/example6.png" style="margin-bottom: 10px;" alt="">
+                </div>
+                <nav class=" blog-nav nav nav-justified my-5 ">
+                    <a class="nav-link-prev nav-item nav-link rounded-left " href="chapter4.html ">Previous<i class="arrow-prev fas fa-long-arrow-alt-left "></i></a>
+                    <a class="nav-link-next nav-item nav-link rounded-right " href="chapter6.html">Next<i class="arrow-next fas fa-long-arrow-alt-right "></i></a>
+                </nav>
+            </div>
+            <!--//container-->
+        </article>
+
+
+        <footer class="footer text-center py-2 theme-bg-dark ">
+
+        </footer>
+
+    </div>
+    <!--//main-wrapper-->
+
+
+    <!-- Javascript -->
+    <script src="assets/plugins/popper.min.js "></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js "></script>
+
+    <!-- Custom JS -->
+    <script src="assets/js/blog.js "></script>
+
+
+
+</body>
+
+</html>
+
+
+
+
+<!-- 
+    <p style="background-color:rgb(224, 224, 224); padding: 15px; "><i><b>Note:</b> </i></p> 
+    <img width="120px" src="assets/images/cs30.png" style="margin-bottom: 10px;" alt="">
+    <div class="meta mb-3"><span class="date">Synchronous waiting</span></div>
+-->

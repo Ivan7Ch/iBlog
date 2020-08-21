@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Глава 2: GCD & Operations</title>
+    <title>2: GCD & Операції</title>
 
     <!-- Meta -->
     <meta charset="utf-8">
@@ -27,31 +27,59 @@
 <body>
 
     <header class="header text-center">
-        <a href="index.html">
-            <h1 class="blog-name pt-lg-4 mb-0">Зміст</h1>
-        </a>
 
-        <nav class="navbar navbar-expand-lg navbar-dark">
+        <h2 class="blog-name pt-lg-4 mb-0"><a href="index.html">Зміст</a></h2>
 
-            <ul class="navbar-nav flex-column text-left">
-                <li class="nav-item">
-                    <a class="nav-link" href="blog-post.html"></i>Початок роботи із паралельністю</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="chapter1.html"></i>Глава 1: Вступ</a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" href="chapter2.html"></i>Глава 2: GCD & Operations</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="chapter3.html"></i>Глава 3: Queues & Threads</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="chapter4.html"></i>Глава 4: Групи ти Семафори</a>
-                </li>
-            </ul>
+        <nav class="navbar navbar-expand-lg navbar-light">
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+			</button>
+
+            <div id="navigation" class="collapse navbar-collapse flex-column">
+                <div class="profile-section pt-3 pt-lg-0">
+
+                    <ul class="navbar-nav flex-column text-left">
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter1.html"></i>1: Вступ<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="chapter2.html"></i>2: GCD & Операції.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter3.html"></i>3: Черги & Потоки.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter4.html"></i>4: Групи ти Семафори.</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter5.html"></i>5: Проблеми багатопотоковості</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter6.html"></i>6: Операції</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter7.html"></i>7: Черги операцій</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter8.html"></i>8: Асинхронні операції</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter9.html"></i>9: Залежності між операціями</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="chapter10.html"></i>10: Скасування операцій</a>
+                        </li>
+                    </ul>
+                    <!--//social-list-->
+                </div>
+                <!--//profile-section-->
 
 
+                <div class="my-2 my-md-3">
+                    <a class=" btn btn-primary " href="index.html ">Home</a>
+                </div>
             </div>
         </nav>
     </header>
@@ -61,16 +89,14 @@
         <article class="blog-post px-3 py-5 p-md-5">
             <div class="container">
                 <header class="blog-post-header">
-                    <h1 class="title mb-2">Глава 2: GCD & Operations</h1>
-                    <div class="meta mb-3"><span class="date">Published 3 months ago</span><span class="time">15 min read</span><span class="comment"></span></div>
+                    <h1 class="title mb-2">Глава 2: GCD & Операції</h1>
+                    <div class="meta mb-3"><span class="date">Chapter 2: GCD & Operations</span><span class="time">11 min read</span><span class="comment"></span></div>
                 </header>
-
                 <div class="blog-post-body">
                     <br>
                     <p>Є два <b>API</b>, які ви будете використовувати при паралельній роботі програми: <b>Grand Central Dispatch (GCD)</b> і <b>Operations</b>. Це не конкуруючі технології і вам не потрібно обирати з чим працювати, тому що Операції побудовані
                         на основі GCD!
                     </p>
-
                     <br>
                     <h2>Grand Central Dispatch</h2>
                     <p>GCD - це реалізація Apple бібліотеки мови C <b>libdispatch</b>. Його мета - поставити в чергу завдання, методи, або замикання, які можуть виконуватися паралельно, в залежності від доступності ресурсів; потім він виконує завдання на
@@ -80,26 +106,20 @@
                         для його застосування потрібно лише 15 інструкцій, тоді як для створення традиційних потоків може знадобитися кілька сотень інструкцій.</p>
                     <p>Всі завдання, якими GCD керує, потрапляють в керовані GCD черги типу «<b>першим прийшов - першим пішов</b>» (FIFO). Кожне завдання, яке ви відправляєте в чергу, потім виконується в пулі потоків, повністю керованих системою.</p>
                     <p style="background-color:rgb(224, 224, 224); padding: 15px;"><i><b>Note:</b> Немає гарантії щодо того, над яким потоком буде виконано ваше завдання.</i></p>
-
                     <br>
                     <h3>Синхронність та асинхронність</h3>
                     <p>Завдання, яке додане в чергу, може виконуватися <b>синхронно</b> або <b>асинхронно</b>. При синхронному виконанні завдання ваш додаток буде очікувати і блокувати поточний цикл виконання до завершення задачі, перш ніж перейти до наступного
                         кроку. Натомість, завдання, яке запускається асинхронно, запускається, але негайно повертає виконання вашому додатку. Таким чином, поки виконується перше завдання, програма може вільно запускати наступні задачі.</p>
                     <p style="background-color:rgb(224, 224, 224); padding: 15px;"><i><b>Note:</b> Важливо пам'ятати, що, хоча черги засновані на FIFO, це не гарантує, що завдання будуть завершені в порядку їх відправлення. Процедура FIFO застосовується до моменту запуску завдання, а не до його завершення.</i></p>
-
                     <p>Загалом, ви можете виконати будь-яку довгострокову задачу, не пов'язану з роботою UI, і запустити її асинхронно у фоновому режимі. GCD робить це дуже просто за допомогою замикань з кількома рядками коду, наприклад так:</p>
-
-                    <img width="600" style="margin-bottom: 20px;" src="assets/images/cs1.png" alt="image">
-
+                    <img width="511" src="assets/images/cs1.png" style="margin-bottom: 10px;" alt="">
                     <p>Ви дізнаєтеся все про <b>DispatchQueue</b> в <b>Розділ 3: «Черги і потоки»</b>. У загальному випадку ви створюєте чергу, відправляєте їй завдання для асинхронного запуску у фоновому потоці і, коли вона завершена, ви делегуєте код назад
                         в основний потік для оновлення UI.</p>
-
                     <br>
                     <h3>Послідовні та паралельні черги</h3>
                     <p>Черга, в яку відправляється ваше завдання, також має властивість бути <b>послідовною</b> або <b>паралельною</b>. Послідовні черги мають тільки один потік, що дозволяє виконувати тільки одну задачу в будь-який момент часу. Паралельна
                         черга, натомість, може використовувати стільки потоків, скільки їх є у системі. В паралельній черзі потоки створюються і звільняються так, як це необхідо.</p>
                     <p style="background-color:rgb(224, 224, 224); padding: 15px;"><i><b>Note:</b> Хоча ви можете сказати iOS, що хочете використовувати паралельну чергу, пам'ятайте, що немає гарантії, що одночасно буде виконуватися більш одного завдання. Якщо ваш пристрій iOS повністю зайнятий і ваш додаток конкурує за ресурси пристрою, то додаток зможе виконувати тільки одну задачу.</i></p>
-
                     <br>
                     <h3>Асинхронність не означає одночасність</h3>
                     <p>Хоча на перший погляд різниця здається незначною, але те, що ваші завдання <i>асинхронні</i>, не означає, що вони будуть виконуватися <i>одночасно</i>. Насправді ви можете відправляти асинхронні завдання в послідовну або паралельну
@@ -107,7 +127,6 @@
                     </p>
                     <p>З іншого боку, класифікація чого-небудь як послідовного в порівнянні з паралельним вказує на те, скільки черга має доступних потоків для неї. Якщо задуматися над цим, то відправка трьох асинхронних завдань в послідовну чергу означає,
                         що кожна задача повинна бути повністю завершена, перш ніж наступна задача зможе запуститися, оскільки доступний тільки один потік.</p>
-
                     <h2>Операції</h2>
                     <p>GCD відмінно підходить для загальних завдань, які потрібно одноразово запустити у фоновому режимі. Якщо вам знадобиться функціональність, яку слід використовувати повторно, наприклад, редагування зображень, ви, ймовірно, захочете інкапсулювати
                         цю функціональність в клас. З допомогою підкласу Operation ви зможете досягти цієї мети!
@@ -125,11 +144,9 @@
                     </ul>
                     <p>На відміну від GCD, операція за замовчуванням виконується синхронно, і для її асинхронного виконання потрібно виконати більше роботи. Ви можете безпосередньо виконати операцію, але це майже ніколи не дасть очікуваного результату через
                         синхронний характер операцій. Вам доведеться перемістити виконання операції з main потоку в OperationQueue, щоб продуктивність вашого інтерфейсу не постраждала.</p>
-
                     <p>Операції забезпечують більший контроль над вашими завданнями, оскільки тепер ви можете обробляти такі загальні потреби, як скасування завдання, створення звітів про стан завдання, включення асинхронних завдань в операцію і визначати
                         залежності між різними завданнями. Глава 6 «Операції» надасть більш глибоке обговорення про використання операцій у вашому додатку.
                     </p>
-
                     <br>
                     <h3>BlockOperation</h3>
                     <p>Іноді при роботі над додатком, який вже інтенсивно використовує операції, вам може знадобитися простіше, GCD-подібне, замикання. Якщо ви не хочете створювати DispatchQueue, ви можете замість цього використовувати клас <b>BlockOperation</b>.
@@ -137,9 +154,7 @@
                     <p><b>BlockOperation</b> (підклас Operation) управляє паралельним виконанням одного або декількох замикань в стандартній глобальній черзі (global queue). Але, будучи підкласом Operation, BlockOperation дозволяє скористатися всіма іншими
                         можливостями операцій.
                     </p>
-
                     <p style="background-color:rgb(224, 224, 224); padding: 15px;"><i><b>Note:</b> Block operations виконуються паралельно. Якщо вам потрібно, щоб вони запускалися послідовно, вам необхідо відповідним чином налаштувати dispatch queue.</i></p>
-
                     <br>
                     <h3>Способи використання</h3>
                     <p>Немає чіткої вказівки щодо того, що вам слід використовувати у вашому додатку, GCD чи Operations. З GCD простіше працювати для загальних завдань, які потрібно просто виконати і забути. Операції надають набагато більше функціональності,
@@ -151,17 +166,11 @@
                     </p>
                     <p>У наступному розділі ви глибоко зануритеся в роботу Grand Central Dispatch, дізнаєтеся про різницю між потоками і чергами і про деякі труднощі, які можуть виникнути при реалізації паралелізму у вашому додатку.
                     </p>
-
-
-
                 </div>
-
                 <nav class="blog-nav nav nav-justified my-5">
-                    <a class="nav-link-prev nav-item nav-link rounded-left" href="blog-post.html">Previous<i class="arrow-prev fas fa-long-arrow-alt-left"></i></a>
-                    <a class="nav-link-next nav-item nav-link rounded-right" href="#">Next<i class="arrow-next fas fa-long-arrow-alt-right"></i></a>
+                    <a class="nav-link-prev nav-item nav-link rounded-left" href="chapter1.html">Previous<i class="arrow-prev fas fa-long-arrow-alt-left"></i></a>
+                    <a class="nav-link-next nav-item nav-link rounded-right" href="chapter3.html">Next<i class="arrow-next fas fa-long-arrow-alt-right"></i></a>
                 </nav>
-
-
             </div>
             <!--//container-->
         </article>
